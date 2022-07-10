@@ -35,6 +35,7 @@ class WavFile {
         WAVHEADER wavheader;
 
         constexpr static double max_amp = INT16_MAX;
+        constexpr static double def_amp = max_amp * 0.25;
 
         vector<StereoSample> samples;
 
