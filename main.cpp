@@ -31,7 +31,7 @@ int main() {
     }
     }
 
-    wavfile.write((char*)"out.wav");
+    wavfile.write((char*)"project.musc/out.wav");
 
     return 0;
 }

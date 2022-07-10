@@ -3,7 +3,7 @@ CXXFLAGS +=
 LDFLAGS +=
 MAKEFLAGS = -j4
 
-OBJS = main.o sounds.o wav.o notes.o
+OBJS = main.o sounds.o wav.o notes.o voices.o
 TARGET = musiscript
 
 $(TARGET): $(OBJS)
