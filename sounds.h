@@ -14,6 +14,6 @@ enum SOUNDS {
     SAW,
 };
 
-int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp = 1, double hz = 44100);
+int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp = 0.25, double hz = 44100);
 
 #endif

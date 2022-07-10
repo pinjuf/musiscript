@@ -25,5 +25,5 @@ int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, d
             out = 0;
     }
 
-    return out * amp * WavFile::max_amp;
+    return (int16_t)(out * amp * WavFile::max_amp)%((int)WavFile::max_amp+1);
 }
