@@ -45,7 +45,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 stereosample.l = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume) * (1-pan);
                 stereosample.r = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume) * pan;
 
-                if (counter == outsamples->size()-1) {
+                if (counter < outsamples->size()) {
                     outsamples->at(counter).l += stereosample.l;
                     outsamples->at(counter).r += stereosample.r;
                 } else {
@@ -65,7 +65,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 stereosample.l = get_sound_at_wavready(0, 0, SILENCE, volume);
                 stereosample.r = get_sound_at_wavready(0, 0, SILENCE, volume);
 
-                if (counter == outsamples->size()-1) {
+                if (counter < outsamples->size()) {
                     outsamples->at(counter).l += stereosample.l;
                     outsamples->at(counter).r += stereosample.r;
                 } else {

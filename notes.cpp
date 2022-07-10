@@ -7,7 +7,7 @@ double get_freq_by_name(char * name) {
     double out;
     int mod = 0;
 
-    for (int i = 0; name[i]; i++) {
+    for (int i = 2; name[i]; i++) {
         switch (name[i]) {
             case '+':
             case '#':

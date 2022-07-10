@@ -1,18 +1,21 @@
+#include <filesystem>
+
 #include "wav.h"
 #include "sounds.h"
 #include "notes.h"
 #include "voices.h"
 
-#include <iostream>
-
 int main() {
     WavFile wavfile;
     Voice voice;
 
-    voice.read_from_file((char*)"data/1.vc", &wavfile.samples);
-    voice.read_from_file((char*)"datausc/2.vc", &wavfile.samples);
+    for (auto& file : std::filesystem::directory_iterator("data")) {
+        if (file.path().extension() == ".vc") {
+            voice.read_from_file((char*)file.path().string().c_str(), &wavfile.samples);
+        }
+    }
 
-    wavfile.write((char*)"datausc/out.wav");
+    wavfile.write((char*)"data/out.wav");
 
     return 0;
 }
