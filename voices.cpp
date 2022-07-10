@@ -39,8 +39,8 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             StereoSample stereosample;
 
             for (int i = 0; i < duration*44100/speed; i++) {
-                stereosample.l = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume);
-                stereosample.r = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume);
+                stereosample.l = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume) * (1-pan);
+                stereosample.r = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume) * pan;
 
                 outsamples->push_back(stereosample);
             }
