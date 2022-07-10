@@ -36,14 +36,23 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             sound = atoi(tokens[1].c_str());
 
         else if (!strcmp(tokens[0].c_str(), "n")) {
-            double freq = get_freq_by_name((char*)tokens[1].c_str());
+            std::vector<std::string> note_tokens = split_string(tokens[1], ',');
+            std::vector<double> freqs;
+            for (int i = 0; i < note_tokens.size(); i++) {
+                freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str()));
+            }
+
             double duration = atof(tokens[2].c_str());
 
             StereoSample stereosample;
 
             for (int i = 0; i < duration*44100/speed; i++) {
-                stereosample.l = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume) * (1-pan);
-                stereosample.r = get_sound_at_wavready(i, freq, (SOUNDS)sound, volume) * pan;
+                stereosample.l = 0;stereosample.r = 0;
+
+                for (int j = 0; j < freqs.size(); j++) {
+                    stereosample.l += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound, volume) * (1 - pan) / freqs.size();
+                    stereosample.r += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound, volume) * pan / freqs.size();
+                }
 
                 if (counter < outsamples->size()) {
                     outsamples->at(counter).l += stereosample.l;

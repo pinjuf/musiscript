@@ -4,13 +4,13 @@ sound 1
 speed 5
 
 n a2- 1
-n d3 1
+n d3,e3 1
 n a2- 1
-n d3 1
+n d3,e3 1
 n a2- 1
-n d3 1
+n d3,e3 1
 n a2- 1
-n d3 1
+n d3,e3 1
 
 n a2 1
 n e3 1
@@ -22,13 +22,13 @@ n a2 1
 n e3 1
 
 n a2- 1
-n d3 1
+n d3,e3 1
 n a2- 1
-n d3 1
+n d3,e3 1
 n a2- 1
-n d3 1
+n d3,e3 1
 n a2- 1
-n d3 1
+n d3,e3 1
 
 n a2 1
 n e3 1
