@@ -1,12 +1,14 @@
-#include <cmath>
 #include "wav.h"
 #include "sounds.h"
 #include "notes.h"
 #include "voices.h"
 
+#include <iostream>
+
 int main() {
+    /*
     WavFile wavfile;
-        StereoSample sample;
+    StereoSample sample;
 
 
     for (int j = 0; j < 8; j++) {
@@ -31,6 +33,14 @@ int main() {
         wavfile.samples.push_back(sample);
     }
     }
+
+    wavfile.write((char*)"project.musc/out.wav");
+    */
+
+    WavFile wavfile;
+    Voice voice;
+
+    voice.read_from_file((char*)"project.musc/1.vc", &wavfile.samples);
 
     wavfile.write((char*)"project.musc/out.wav");
 

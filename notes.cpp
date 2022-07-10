@@ -17,6 +17,7 @@ double get_freq_by_name(char * name) {
             case 'b':
                 mod = -1;
                 break;
+                break;
             default:
                 mod = 0;
         }
