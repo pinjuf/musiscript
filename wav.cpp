@@ -11,7 +11,7 @@ void WavFile::fill_sizevalues() {
 }
 
 void WavFile::write(char * filename) {
-    ofstream outfile(filename, std::ios::binary);
+    std::ofstream outfile(filename, std::ios::binary);
 
     fill_fmtvalues();
     fill_sizevalues();

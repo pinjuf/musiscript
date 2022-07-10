@@ -2,6 +2,7 @@
 #include "wav.h"
 #include "sounds.h"
 #include "notes.h"
+#include "voices.h"
 
 int main() {
     WavFile wavfile;

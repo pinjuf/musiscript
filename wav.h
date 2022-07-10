@@ -6,9 +6,6 @@
 #include <fstream>
 #include <cmath>
 
-using std::vector;
-using std::ofstream;
-
 typedef struct StereoSample {
     int16_t l, r;
 } StereoSample;
@@ -37,7 +34,7 @@ class WavFile {
         constexpr static double max_amp = INT16_MAX;
         constexpr static double def_amp = max_amp * 0.25;
 
-        vector<StereoSample> samples;
+        std::vector<StereoSample> samples;
 
         void fill_fmtvalues();
         void fill_sizevalues();
