@@ -15,7 +15,7 @@ run: $(TARGET)
 	./$(TARGET)
 
 play: run
-	ffplay data/out.wav 2> /dev/null
+	ffplay data/out.wav 2> /dev/null -showmode 1
 
 clean:
 	rm src/*.o
