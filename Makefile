@@ -3,7 +3,7 @@ CXXFLAGS =
 LDFLAGS =
 MAKEFLAGS = -j4
 
-OBJS = src/main.o src/wav.o src/sounds.o src/voices.o src/notes.o
+OBJS = src/main.o src/wav.o src/sounds.o src/voices.o src/notes.o src/effects.o
 TARGET = musiscript
 
 $(TARGET): $(OBJS)
@@ -19,5 +19,5 @@ clean:
 	rm -f $(OBJS)
 	rm -f $(TARGET)
 
-play:
+play: run
 	ffplay data/out.wav -showmode 1 2> /dev/null

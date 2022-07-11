@@ -10,6 +10,8 @@
 #include "wav.h"
 #include "sounds.h"
 #include "notes.h"
+#include "effects.h"
+#include "notes.h"
 
 class Voice {
     public:
@@ -18,9 +20,12 @@ class Voice {
         double pan    = 0.5;
         double volume = 1;
         double speed  = 1;
+        int transpose = 0;
         int sound     = SILENCE;
 
         void read_from_file(char * filename, std::vector<StereoSample> * outsamples);
+
+        std::vector<Effect> effects;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #include "voices.h"
-#include "notes.h"
-#include "sounds.h"
-#include "wav.h"
+#include "effects.h"
+
+#include <iostream>
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -17,6 +17,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     std::ifstream file(filename);
     std::string line;
     std::vector<std::string> tokens;
+    effects.clear();
 
     uint64_t counter = 0;
 
@@ -35,12 +36,14 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             speed = atof(tokens[1].c_str());
         else if (!strcmp(tokens[0].c_str(), "sound"))
             sound = atoi(tokens[1].c_str());
+        else if (!strcmp(tokens[0].c_str(), "transpose"))
+            transpose = atoi(tokens[1].c_str());
 
         else if (!strcmp(tokens[0].c_str(), "n")) {
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
             std::vector<double> freqs;
             for (int i = 0; i < note_tokens.size(); i++) {
-                freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str()));
+                freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str(), transpose));
             }
 
             std::vector<std::string> duration_tokens = split_string(tokens[2], '+');
@@ -55,9 +58,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 stereosample.l = 0;stereosample.r = 0;
 
                 for (int j = 0; j < freqs.size(); j++) {
-                    stereosample.l += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound, volume) * (1 - pan) / freqs.size();
-                    stereosample.r += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound, volume) * pan / freqs.size();
+                    stereosample.l += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound) * (1 - pan) / freqs.size();
+                    stereosample.r += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound) * pan / freqs.size();
                 }
+
+                for (int j = 0; j < effects.size(); j++)
+                     get_through_effect(&stereosample, effects[j], counter);
+
+                stereosample.l *= volume;
+                stereosample.r *= volume;
 
                 if (counter < outsamples->size()) {
                     outsamples->at(counter).l += stereosample.l;
@@ -69,7 +78,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 counter++;
             }
 
-            if (durations.size()>=2) {
+            if (durations.size()==2) {
                 for (int i = 0; i < durations[1]*SAMPLING_RATE/speed; i++) {
                     stereosample.l = 0;stereosample.r = 0;
 

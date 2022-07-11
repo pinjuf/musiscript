@@ -1,6 +1,6 @@
 #include "notes.h"
 
-double get_freq_by_name(char * name) {
+double get_freq_by_name(char * name, int transpose) {
     char base = name[0];
     if (isupper(base)) base += 32;
 
@@ -28,30 +28,30 @@ double get_freq_by_name(char * name) {
 
     switch (base) {
         case 'a':
-            out = A4_FREQ * pow(HALFTONE_STEP, 0+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 0+mod+transpose);
             break;
         case 'h':
         case 'b':
-            out = A4_FREQ * pow(HALFTONE_STEP, 2+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 2+mod+transpose);
             break;
         case 'c':
-            out = A4_FREQ * pow(HALFTONE_STEP, 3+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 3+mod+transpose);
             octave--;
             break;
         case 'd':
-            out = A4_FREQ * pow(HALFTONE_STEP, 5+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 5+mod+transpose);
             octave--;
             break;
         case 'e':
-            out = A4_FREQ * pow(HALFTONE_STEP, 7+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 7+mod+transpose);
             octave--;
             break;
         case 'f':
-            out = A4_FREQ * pow(HALFTONE_STEP, 8+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 8+mod+transpose);
             octave--;
             break;
         case 'g':
-            out = A4_FREQ * pow(HALFTONE_STEP, 10+mod);
+            out = A4_FREQ * pow(HALFTONE_STEP, 10+mod+transpose);
             octave--;
             break;
     }
