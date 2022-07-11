@@ -1,3 +1,4 @@
 *.wav
 *.o
 musiscript
+data/*.vc
