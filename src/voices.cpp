@@ -49,9 +49,6 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             if (!strcmp(tokens[0].c_str(), "c"))
                 effects.clear();
         }
-        else if (!strcmp(tokens[0].c_str(), "end")) {
-            break;
-        }
 
         else if (!strcmp(tokens[0].c_str(), "n")) {
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
@@ -127,5 +124,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 counter++;
             }
         }    
+
+        else if (!strcmp(tokens[0].c_str(), "end")) {
+            break;
+        }
     }
 }

@@ -12,10 +12,10 @@ enum EFFECTS {
     POW,
     AMP_VIBRATO,
     AD_ENVELOPE,
-    CUSTOM0,
-    CUSTOM1,
-    CUSTOM2,
-    CUSTOM3,
+    EFF_CUSTOM0,
+    EFF_CUSTOM1,
+    EFF_CUSTOM2,
+    EFF_CUSTOM3,
 };
 
 class Effect {
