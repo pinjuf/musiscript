@@ -11,6 +11,7 @@ enum EFFECTS {
     CUTOFF,
     POW,
     AMP_VIBRATO,
+    AD_ENVELOPE,
     CUSTOM0,
     CUSTOM1,
     CUSTOM2,
