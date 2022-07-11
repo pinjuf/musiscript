@@ -42,11 +42,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str()));
             }
 
-            double duration = atof(tokens[2].c_str());
+            std::vector<std::string> duration_tokens = split_string(tokens[2], '+');
+            std::vector<double> durations;
+            for (int i = 0; i < duration_tokens.size(); i++) {
+                durations.push_back(atof(duration_tokens[i].c_str()));
+            }
 
             StereoSample stereosample;
 
-            for (int i = 0; i < duration*44100/speed; i++) {
+            for (int i = 0; i < durations[0]*44100/speed; i++) {
                 stereosample.l = 0;stereosample.r = 0;
 
                 for (int j = 0; j < freqs.size(); j++) {
@@ -63,6 +67,21 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
                 counter++;
             }
+
+            if (durations.size()>=2) {
+                for (int i = 0; i < durations[1]*44100/speed; i++) {
+                    stereosample.l = 0;stereosample.r = 0;
+
+                    if (counter < outsamples->size()) {
+                        outsamples->at(counter).l += stereosample.l;
+                        outsamples->at(counter).r += stereosample.r;
+                    } else {
+                        outsamples->push_back(stereosample);
+                    }
+
+                    counter++;
+                }
+            }
         }
 
         else if (!strcmp(tokens[0].c_str(), "p")) {
@@ -71,8 +90,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             StereoSample stereosample;
 
             for (int i = 0; i < duration*44100/speed; i++) {
-                stereosample.l = get_sound_at_wavready(0, 0, SILENCE, volume);
-                stereosample.r = get_sound_at_wavready(0, 0, SILENCE, volume);
+                stereosample.l = 0;stereosample.r = 0;
 
                 if (counter < outsamples->size()) {
                     outsamples->at(counter).l += stereosample.l;

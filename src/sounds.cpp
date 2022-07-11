@@ -20,6 +20,16 @@ int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, d
             out = 2*(i-floor(i+1.0f/2));
             break;
 
+        case CUSTOM0:
+            out = sin(M_PI*2*i)*exp(fmod(i/25, 4));
+            break;
+        case CUSTOM1:
+            break;
+        case CUSTOM2:
+            break;
+        case CUSTOM3:
+            break;
+
         case SILENCE:
         default:
             out = 0;

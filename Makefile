@@ -1,22 +1,23 @@
 CXX = g++
-CXXFLAGS +=
-LDFLAGS +=
+CXXFLAGS =
+LDFLAGS =
 MAKEFLAGS = -j4
 
-OBJS = main.o sounds.o wav.o notes.o voices.o
+OBJS = src/main.o src/wav.o src/sounds.o src/voices.o src/notes.o
 TARGET = musiscript
 
-all: $(TARGET)
+$(TARGET): $(OBJS)
+	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-$(TARGET):
-	$(MAKE) -C src all
+%.o: %.cpp %.h
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 run: $(TARGET)
 	./$(TARGET)
 
-play: run
-	ffplay data/out.wav 2> /dev/null -showmode 1
-
 clean:
-	rm src/*.o
-	rm $(TARGET)
+	rm -f $(OBJS)
+	rm -f $(TARGET)
+
+play:
+	ffplay data/out.wav -showmode 1 2> /dev/null
