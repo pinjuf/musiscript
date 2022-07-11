@@ -1,8 +1,6 @@
 #include "voices.h"
 #include "effects.h"
 
-#include <iostream>
-
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
     std::stringstream ss(str);
@@ -39,6 +37,22 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         else if (!strcmp(tokens[0].c_str(), "transpose"))
             transpose = atoi(tokens[1].c_str());
 
+        else if (!strcmp(tokens[0].c_str(), "effect")) {
+            if (!strcmp(tokens[1].c_str(), "a")) {
+                Effect effect = Effect();
+                effect.effect = (EFFECTS)atoi(tokens[2].c_str());
+                for (int i = 3; i < tokens.size(); i++) {
+                    effect.settings[i-3] = atof(tokens[i].c_str());
+                }
+                effects.push_back(effect); 
+            }
+            if (!strcmp(tokens[0].c_str(), "c"))
+                effects.clear();
+        }
+        else if (!strcmp(tokens[0].c_str(), "end")) {
+            break;
+        }
+
         else if (!strcmp(tokens[0].c_str(), "n")) {
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
             std::vector<double> freqs;
@@ -63,7 +77,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
 
                 for (int j = 0; j < effects.size(); j++)
-                     get_through_effect(&stereosample, effects[j], counter);
+                     effects[j].get_through_effect(&stereosample, i);
 
                 stereosample.l *= volume;
                 stereosample.r *= volume;

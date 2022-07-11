@@ -10,15 +10,18 @@ enum EFFECTS {
     NO_EFFECT,
     CUTOFF,
     POW,
-    VIBRATO,
+    AMP_VIBRATO,
+    CUSTOM0,
+    CUSTOM1,
+    CUSTOM2,
+    CUSTOM3,
 };
 
 class Effect {
     public:
         EFFECTS effect;
-        double settings[8];
+        double settings[32] = {0};
+        void get_through_effect(StereoSample * sample, uint64_t sample_count);
 };
-
-void get_through_effect(StereoSample * sample, Effect effect, uint64_t sample_count);
 
 #endif
