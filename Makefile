@@ -6,11 +6,10 @@ MAKEFLAGS = -j4
 OBJS = main.o sounds.o wav.o notes.o voices.o
 TARGET = musiscript
 
-$(TARGET): $(OBJS)
-	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS) $(CXXFLAGS)
+all: $(TARGET)
 
-%.o: %.cpp %.h
-	$(CXX) -c $< -o $@ $(CXXFLAGS)
+$(TARGET):
+	$(MAKE) -C src all
 
 run: $(TARGET)
 	./$(TARGET)
@@ -19,5 +18,5 @@ play: run
 	ffplay data/out.wav 2> /dev/null
 
 clean:
-	rm $(OBJS)
+	rm src/*.o
 	rm $(TARGET)
