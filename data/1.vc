@@ -1,28 +1,28 @@
-pan 1
-volume 3
-sound 2
-speed 5
+speed 2
+sound 3
+volume 2
 
-n e5 2
-n b4 1
-n c5 1
-n d5 2
-n c5 1
-n b4 1
-n a4 1.9
+n d4,f4,a4 3.9
 p 0.1
-n a4 1
-n c5 1
-n e5 2
-n d5 1
-n c5 1
-n b4 1.9
+n d4,f4,a4 0.5
+
+n c4,e4,g4 3.5
+
+n b3,d4,g4 4
+
+n b3-,d4,f4 2
+
+n c4,e4,g4 2
+
+
+n d4,f4,a4 3.9
 p 0.1
-n b4 1
-n c5 1
-n d5 2
-n e5 2
-n c5 2
-n a4 1.9
-p 0.1
-n a4 4
+n d4,f4,a4 0.5
+
+n c4,e4,g4 3.5
+
+n b3,d4,g4 4
+
+n b3-,d4,f4 2
+
+n c4,e4,g4 2

@@ -1,40 +1,74 @@
-pan 0
-volume 4
-sound 1
-speed 5
+speed 2
+sound 2
+volume 0.5
 
-n a2- 1
-n d3,e3 1
-n a2- 1
-n d3,e3 1
-n a2- 1
-n d3,e3 1
-n a2- 1
-n d3,e3 1
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
 
-n a2 1
-n e3 1
-n a2 1
-n e3 1
-n a2 1
-n e3 1
-n a2 1
-n e3 1
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
 
-n a2- 1
-n d3,e3 1
-n a2- 1
-n d3,e3 1
-n a2- 1
-n d3,e3 1
-n a2- 1
-n d3,e3 1
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
 
-n a2 1
-n e3 1
-n a2 1
-n e3 1
-n a2 1
-n e3 1
-n a2 1
-n e3 1
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5
+n d2 0.5
+n d3 0.5

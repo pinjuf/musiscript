@@ -16,7 +16,7 @@ run: $(TARGET)
 	./$(TARGET)
 
 play: run
-	ffplay data/out.wav -showmode 1 2> /dev/null
+	ffplay data/out.wav 2> /dev/null
 
 clean:
 	rm $(OBJS)
