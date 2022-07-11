@@ -36,8 +36,8 @@ Pitches are given using the following pattern:
 <base pitch> <octaves> <accidentals>
 ```
 The base pitch is simply a letter representing a key (think standard piano): `c` `d` `e` `f` `g` `a` `b`
-Upper- and lowercase letters are treated as the same.
+Upper- and lowercase letters are treated as the same, and `h`is treated as `b.
 
 The octaves are self-explanatory, as they define the octave in which a pitch should be played. Here, `A4` is at 440 hz.
 
-For accidentals, a `+` or a `#` represents a sharp tone, a `-` or a `b` a flat one.
+For accidentals, a `+` or a `#` represents a sharp tone, a `-` or a `b` a flat one. As an example: `b4-`
