@@ -1,6 +1,7 @@
 #include "voices.h"
 #include "notes.h"
 #include "sounds.h"
+#include "wav.h"
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -50,7 +51,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             StereoSample stereosample;
 
-            for (int i = 0; i < durations[0]*44100/speed; i++) {
+            for (int i = 0; i < durations[0]*SAMPLING_RATE/speed; i++) {
                 stereosample.l = 0;stereosample.r = 0;
 
                 for (int j = 0; j < freqs.size(); j++) {
@@ -69,7 +70,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
 
             if (durations.size()>=2) {
-                for (int i = 0; i < durations[1]*44100/speed; i++) {
+                for (int i = 0; i < durations[1]*SAMPLING_RATE/speed; i++) {
                     stereosample.l = 0;stereosample.r = 0;
 
                     if (counter < outsamples->size()) {
@@ -89,7 +90,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             StereoSample stereosample;
 
-            for (int i = 0; i < duration*44100/speed; i++) {
+            for (int i = 0; i < duration*SAMPLING_RATE/speed; i++) {
                 stereosample.l = 0;stereosample.r = 0;
 
                 if (counter < outsamples->size()) {

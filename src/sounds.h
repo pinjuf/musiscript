@@ -18,6 +18,6 @@ enum SOUNDS {
     CUSTOM3,
 };
 
-int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp = 1, double hz = 44100);
+int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp = 1, double hz = SAMPLING_RATE);
 
 #endif

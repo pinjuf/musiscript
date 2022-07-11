@@ -6,6 +6,8 @@
 #include <fstream>
 #include <cmath>
 
+#define SAMPLING_RATE 44100
+
 typedef struct StereoSample {
     int16_t l, r;
 } StereoSample;
@@ -21,7 +23,7 @@ class WavFile {
             uint32_t Subchunk1Size = 16;
             uint16_t AudioFormat   = 1;      // Simple PCM format
             uint16_t NumChannels   = 2;      // 2 Channels (Stereo)
-            uint32_t SampleRate    = 44100;  // 44kHz sampling rate
+            uint32_t SampleRate    = SAMPLING_RATE;  // 44kHz sampling rate
             uint32_t ByteRate;               // SampleRate*BitsPerSample*NumChannels/8
             uint16_t BlockAlign;             // BitsPerSample*NumChannels/8 (16 bit Stereo);
             uint16_t BitsPerSample = 16;     // 16 Bits per sample
