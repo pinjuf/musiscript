@@ -8,11 +8,11 @@
 
 enum EFFECTS {
     NO_EFFECT,
-    CUTOFF,
-    POW,
+    AMP_CUTOFF,
+    AMP_POW,
     AMP_VIBRATO,
-    AD_ENVELOPE,
-    BITCRUSHER,
+    AMP_AD_ENVELOPE,
+    AMP_BITCRUSHER,
     EFF_CUSTOM0,
     EFF_CUSTOM1,
     EFF_CUSTOM2,
@@ -23,7 +23,8 @@ class Effect {
     public:
         EFFECTS effect;
         double settings[32] = {0};
-        void get_through_effect(StereoSample * sample, uint64_t sample_count);
+        void get_through_amp_effect(StereoSample * sample, uint64_t sample_count);
+        double get_through_freq_effect(double freq);
 };
 
 #endif
