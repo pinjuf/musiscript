@@ -32,6 +32,18 @@ void Effect::get_through_effect(StereoSample * sample, uint64_t sample_count) {
             
             break;
         }
+        case BITCRUSHER: {
+            uint16_t l2 = (uint16_t) (l*WavFile::def_amp);
+            uint16_t r2 = (uint16_t) (r*WavFile::def_amp);
+
+            l2 >>= (int)settings[0]; // Divide, dropping least significant bits
+            r2 >>= (int)settings[0];
+            l2 <<= (int)settings[0]; // Multiply to original scale, but with dropped bits
+            r2 <<= (int)settings[0];
+
+            l = (double)l2/WavFile::def_amp;
+            r = (double)r2/WavFile::def_amp;
+        }
         case NO_EFFECT:
         default:
             break;
