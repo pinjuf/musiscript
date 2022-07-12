@@ -5,7 +5,7 @@ void Effect::get_through_amp_effect(StereoSample * sample, uint64_t sample_count
     double l = sample->l/WavFile::def_amp;
     double r = sample->r/WavFile::def_amp;
 
-    double timeinto = ((float) sample_count)/SAMPLING_RATE;
+    double timeinto = ((double) sample_count)/SAMPLING_RATE;
 
     switch (effect) {
         case AMP_CUTOFF:
