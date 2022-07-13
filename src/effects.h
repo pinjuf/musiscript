@@ -13,6 +13,7 @@ enum EFFECTS {
     AMP_VIBRATO,
     AMP_AD_ENVELOPE,
     AMP_BITCRUSHER,
+    FREQ_VIBRATO, // NOT WORKING AS INTENDED
     EFF_CUSTOM0,
     EFF_CUSTOM1,
     EFF_CUSTOM2,
@@ -24,7 +25,7 @@ class Effect {
         EFFECTS effect;
         double settings[32] = {0};
         void get_through_amp_effect(StereoSample * sample, uint64_t sample_count);
-        double get_through_freq_effect(double freq);
+        double get_through_freq_effect(double freq, uint64_t sample_count);
 };
 
 #endif

@@ -53,9 +53,11 @@ void Effect::get_through_amp_effect(StereoSample * sample, uint64_t sample_count
     sample->r = r*WavFile::def_amp;
 }
 
-double Effect::get_through_freq_effect(double freq) {
-
+double Effect::get_through_freq_effect(double freq, uint64_t sample_count) {
     switch (effect) {
+        case FREQ_VIBRATO:
+            freq += sin(2*M_PI*sample_count*settings[0]/SAMPLING_RATE)*settings[1];
+            break;
         case NO_EFFECT:
         default:
             break;

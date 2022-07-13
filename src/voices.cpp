@@ -69,12 +69,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 stereosample.l = 0;stereosample.r = 0;
 
                 for (int j = 0; j < freqs.size(); j++) {
-                    stereosample.l += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound) * (1 - pan) / freqs.size();
-                    stereosample.r += get_sound_at_wavready(i, freqs[j], (SOUNDS)sound) * pan / freqs.size();
+                    double baked_freq = freqs[j];
+                    for (int k = 0; k < effects.size(); k++)
+                        baked_freq = effects[k].get_through_freq_effect(freqs[j], i);
+                    stereosample.l += get_sound_at_wavready(i, baked_freq, (SOUNDS)sound) * (1 - pan) / freqs.size();
+                    stereosample.r += get_sound_at_wavready(i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
                 }
 
                 for (int j = 0; j < effects.size(); j++)
-                     effects[j].get_through_effect(&stereosample, i);
+                     effects[j].get_through_amp_effect(&stereosample, i);
 
                 stereosample.l *= volume;
                 stereosample.r *= volume;
