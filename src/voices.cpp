@@ -1,5 +1,6 @@
 #include "voices.h"
 #include "effects.h"
+#include <cstdint>
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -68,12 +69,17 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             for (int i = 0; i < durations[0]*SAMPLING_RATE/speed; i++) {
                 stereosample.l = 0;stereosample.r = 0;
 
+                uint64_t baked_i;
+                for  (int k = 0; k < effects.size(); k++) {
+                    baked_i = effects[k].get_through_i_effect(i, i);
+                }
+
                 for (int j = 0; j < freqs.size(); j++) {
                     double baked_freq = freqs[j];
                     for (int k = 0; k < effects.size(); k++)
                         baked_freq = effects[k].get_through_freq_effect(freqs[j], i);
-                    stereosample.l += get_sound_at_wavready(i, baked_freq, (SOUNDS)sound) * (1 - pan) / freqs.size();
-                    stereosample.r += get_sound_at_wavready(i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
+                    stereosample.l += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * (1 - pan) / freqs.size();
+                    stereosample.r += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
                 }
 
                 for (int j = 0; j < effects.size(); j++)
