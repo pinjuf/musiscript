@@ -55,7 +55,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
             std::vector<double> freqs;
             for (int i = 0; i < note_tokens.size(); i++) {
-                if (note_tokens[i][0] == 'r') {
+                if (note_tokens[i][0] == 'r') { // 'r' prefix: raw frequency input
                     freqs.push_back(atof(note_tokens[i].c_str() + 1));
                 } else {
                     freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str(), transpose));
@@ -70,7 +70,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             StereoSample stereosample;
 
-            for (int i = 0; i < durations[0]*SAMPLING_RATE/speed; i++) {
+            for (int i = 0; i < durations[0]*SAMPLING_RATE/speed; i++) { // Note how the speed only affects the duration, not effects
                 stereosample.l = 0;stereosample.r = 0;
 
                 uint64_t baked_i; // Used mainly for vibrato
@@ -82,6 +82,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     double baked_freq = freqs[j];
                     for (int k = 0; k < effects.size(); k++)
                         baked_freq = effects[k].get_through_freq_effect(freqs[j], i);
+                    // Get the amplitude, add the panning effect and divide by the number of frequencies to get the average amplitude
                     stereosample.l += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * (1 - pan) / freqs.size();
                     stereosample.r += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
                 }
@@ -138,7 +139,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
         }    
 
-        else if (!strcmp(tokens[0].c_str(), "end")) {
+        else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
             break;
         }
     }
