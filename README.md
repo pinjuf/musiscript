@@ -41,3 +41,5 @@ Upper- and lowercase letters are treated as the same, and `h`is treated as `b.
 The octaves are self-explanatory, as they define the octave in which a pitch should be played. Here, `A4` is at 440 hz.
 
 For accidentals, a `+` or a `#` represents a sharp tone, a `-` or a `b` a flat one. As an example: `b4-`
+
+Alternatively, you may pass a frequency as a floating point number with an `r` prefix, for example: `r440'
