@@ -23,7 +23,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     while(getline(file, line)) {
         tokens = split_string(line, ' ');
 
-        if (tokens.size() == 0) {
+        if (tokens.size() == 0) { // Empty line
             continue;
         }
 
@@ -39,7 +39,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             transpose = atoi(tokens[1].c_str());
 
         else if (!strcmp(tokens[0].c_str(), "effect")) {
-            if (!strcmp(tokens[1].c_str(), "a")) {
+            if (!strcmp(tokens[1].c_str(), "a")) { // 'a' for Add effect
                 Effect effect = Effect();
                 effect.effect = (EFFECTS)atoi(tokens[2].c_str());
                 for (int i = 3; i < tokens.size(); i++) {
@@ -47,15 +47,19 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
                 effects.push_back(effect); 
             }
-            if (!strcmp(tokens[0].c_str(), "c"))
+            if (!strcmp(tokens[0].c_str(), "c")) // 'c' for Clear effect
                 effects.clear();
         }
 
-        else if (!strcmp(tokens[0].c_str(), "n")) {
+        else if (!strcmp(tokens[0].c_str(), "n")) { // 'n' for Note
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
             std::vector<double> freqs;
             for (int i = 0; i < note_tokens.size(); i++) {
-                freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str(), transpose));
+                if (note_tokens[i][0] == 'r') {
+                    freqs.push_back(atof(note_tokens[i].c_str() + 1));
+                } else {
+                    freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str(), transpose));
+                }
             }
 
             std::vector<std::string> duration_tokens = split_string(tokens[2], '+');
@@ -69,7 +73,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             for (int i = 0; i < durations[0]*SAMPLING_RATE/speed; i++) {
                 stereosample.l = 0;stereosample.r = 0;
 
-                uint64_t baked_i;
+                uint64_t baked_i; // Used mainly for vibrato
                 for  (int k = 0; k < effects.size(); k++) {
                     baked_i = effects[k].get_through_i_effect(i, i);
                 }
@@ -98,7 +102,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 counter++;
             }
 
-            if (durations.size()==2) {
+            if (durations.size()==2) { // 2 durations were given, use the second one for a pause immediately after the first one
                 for (int i = 0; i < durations[1]*SAMPLING_RATE/speed; i++) {
                     stereosample.l = 0;stereosample.r = 0;
 
@@ -114,7 +118,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
         }
 
-        else if (!strcmp(tokens[0].c_str(), "p")) {
+        else if (!strcmp(tokens[0].c_str(), "p")) { // 'p' for Pause
             double duration = atof(tokens[1].c_str());
 
             StereoSample stereosample;
