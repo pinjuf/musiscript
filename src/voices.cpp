@@ -136,6 +136,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }
     }
 
+    for (int i = 0; i < effects.size(); i++)
+        effects[i].get_through_buffer_effect(&samples);
+
     for (int i = 0; i < samples.size(); i++) { // Add the samples to the output vector
         if (i < outsamples->size()) {
             outsamples->at(i).l += samples[i].l;

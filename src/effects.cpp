@@ -81,3 +81,31 @@ uint64_t Effect::get_through_i_effect(uint64_t i, uint64_t sample_count) {
 
     return i;
 }
+
+void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
+    switch (effect) {
+        case BUF_SMOOTH: {
+            std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
+            for (uint64_t i = 0; i < buffer->size(); i++) {
+                tempbuffer->push_back(buffer->at(i));
+            }
+
+            for (uint64_t i = settings[0]; i < buffer->size(); i++) {
+                int64_t l = 0;
+                int64_t r = 0;
+                for (int j = -settings[0]; j <= settings[0]; j++) {
+                    if (i+j < buffer->size()) {
+                        l += tempbuffer->at(i+j).l;
+                        r += tempbuffer->at(i+j).r;
+                    }
+                }
+                buffer->at(i).l = l/(settings[0]*2+1);
+                buffer->at(i).r = r/(settings[0]*2+1);
+            }
+            break;
+        }
+        case NO_EFFECT:
+        default:
+            break;
+    }
+}

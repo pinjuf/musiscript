@@ -15,6 +15,7 @@ enum EFFECTS {
     AMP_BITCRUSHER,
     I_VIBRATO,
     I_WAH,
+    BUF_SMOOTH,
     EFF_CUSTOM0,
     EFF_CUSTOM1,
     EFF_CUSTOM2,
@@ -28,6 +29,7 @@ class Effect {
         void get_through_amp_effect(StereoSample * sample, uint64_t sample_count);
         double get_through_freq_effect(double freq, uint64_t sample_count);
         uint64_t get_through_i_effect(uint64_t i, uint64_t sample_count);
+        void get_through_buffer_effect(std::vector<StereoSample> * buffer);
 };
 
 #endif
