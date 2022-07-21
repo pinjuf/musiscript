@@ -22,7 +22,7 @@ A musical scripting language.
 - `volume <float>`: set the volume
 - `speed <float>`: set the speed, this does not affect pitch and should be used only once at the beginning of a script.
 - `sound <int>`: select the sound, as listed in `src/sounds.h` and defined in `src/sounds.cpp`
-- ´transpose <semitones>`: begin transposing
+- transpose <semitones>`: begin transposing
 - `n <pitches> <durations>`: play a sound, multiple pitches can be given as a comma (no spaces) separated list,
 the duration can either be 1 value or 2 (separated by a `+`), where the first dictates the base duration and the second a pause directly after the sound (for repeated, distinct notes)
 - `p <duration>`: pause for the specified duration
@@ -41,3 +41,5 @@ Upper- and lowercase letters are treated as the same, and `h`is treated as `b.
 The octaves are self-explanatory, as they define the octave in which a pitch should be played. Here, `A4` is at 440 hz.
 
 For accidentals, a `+` or a `#` represents a sharp tone, a `-` or a `b` a flat one. As an example: `b4-`
+
+Alternatively, you may pass a frequency as a floating point number with an `r` prefix, for example: `r440'
