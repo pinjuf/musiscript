@@ -1,6 +1,5 @@
 #include "effects.h"
 #include "wav.h"
-#include <cstdint>
 
 void Effect::get_through_amp_effect(StereoSample * sample, uint64_t sample_count) {
     double l = sample->l/WavFile::def_amp;
