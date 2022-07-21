@@ -70,6 +70,10 @@ uint64_t Effect::get_through_i_effect(uint64_t i, uint64_t sample_count) {
             i += sin(2*M_PI*timeinto*settings[0])*settings[1];
             break;
         }
+        case I_WAH: {
+            double timeinto = ((double) sample_count)/SAMPLING_RATE;
+            i = (timeinto*settings[0]-log(timeinto*settings[0]+1))*SAMPLING_RATE/settings[0];
+        }
         case NO_EFFECT:
         default:
             break;
