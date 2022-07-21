@@ -66,7 +66,7 @@ double Effect::get_through_freq_effect(double freq, uint64_t sample_count) {
 
 uint64_t Effect::get_through_i_effect(uint64_t i, uint64_t sample_count) {
     switch (effect) {
-        case I_VIRBATO: {
+        case I_VIBRATO: {
             double timeinto = ((double) sample_count)/SAMPLING_RATE;
             i += sin(2*M_PI*timeinto*settings[0])*settings[1];
             break;
