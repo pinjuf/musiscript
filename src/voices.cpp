@@ -1,5 +1,6 @@
 #include "voices.h"
 #include "effects.h"
+#include "wav.h"
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -19,6 +20,8 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     effects.clear();
 
     uint64_t counter = 0;
+
+    std::vector<StereoSample> samples = {};
 
     while(getline(file, line)) {
         tokens = split_string(line, ' ');
@@ -93,12 +96,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 stereosample.l *= volume;
                 stereosample.r *= volume;
 
-                if (counter < outsamples->size()) {
-                    outsamples->at(counter).l += stereosample.l;
-                    outsamples->at(counter).r += stereosample.r;
-                } else {
-                    outsamples->push_back(stereosample);
-                }
+                samples.push_back(stereosample);
 
                 counter++;
             }
@@ -127,13 +125,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             for (int i = 0; i < duration*SAMPLING_RATE/speed; i++) {
                 stereosample.l = 0;stereosample.r = 0;
 
-                if (counter < outsamples->size()) {
-                    outsamples->at(counter).l += stereosample.l;
-                    outsamples->at(counter).r += stereosample.r;
-                } else {
-                    outsamples->push_back(stereosample);
-                }
-
+                samples.push_back(stereosample);
 
                 counter++;
             }
@@ -141,6 +133,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
             break;
+        }
+    }
+
+    for (int i = 0; i < samples.size(); i++) { // Add the samples to the output vector
+        if (i < outsamples->size()) {
+            outsamples->at(i).l += samples[i].l;
+            outsamples->at(i).r += samples[i].r;
+        } else {
+            outsamples->push_back(samples[i]);
         }
     }
 }
