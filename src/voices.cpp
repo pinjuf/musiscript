@@ -73,9 +73,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             for (int i = 0; i < durations[0]*SAMPLING_RATE/speed; i++) { // Note how the speed only affects the duration, not effects
                 stereosample.l = 0;stereosample.r = 0;
 
-                uint64_t baked_i; // Used mainly for vibrato
-                for  (int k = 0; k < effects.size(); k++) {
-                    baked_i = effects[k].get_through_i_effect(i, i);
+                uint64_t baked_i = i; // Used mainly for vibrato
+                for (int k = 0; k < effects.size(); k++) {
+                    baked_i = effects[k].get_through_i_effect(baked_i, i);
                 }
 
                 for (int j = 0; j < freqs.size(); j++) {
