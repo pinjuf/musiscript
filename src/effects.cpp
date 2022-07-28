@@ -90,11 +90,11 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 tempbuffer->push_back(buffer->at(i));
             }
 
-            for (uint64_t i = settings[0]; i < buffer->size(); i++) {
+            for (uint64_t i = 0; i < buffer->size(); i++) {
                 int64_t l = 0;
                 int64_t r = 0;
                 for (int j = -settings[0]; j <= settings[0]; j++) {
-                    if (i+j < buffer->size()) {
+                    if (i+j < buffer->size() && i+j >= 0) {
                         l += tempbuffer->at(i+j).l;
                         r += tempbuffer->at(i+j).r;
                     }

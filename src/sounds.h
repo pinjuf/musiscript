@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <random>
 
 #include "wav.h"
 
@@ -12,6 +13,7 @@ enum SOUNDS {
     SQUARE,
     TRIANGLE,
     SAW,
+    WHITE_NOISE,
     SND_CUSTOM0,
     SND_CUSTOM1,
     SND_CUSTOM2,

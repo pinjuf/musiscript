@@ -102,16 +102,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
 
             if (durations.size()==2) { // 2 durations were given, use the second one for a pause immediately after the first one
+                stereosample.l = 0;stereosample.r = 0;
                 for (int i = 0; i < durations[1]*SAMPLING_RATE/speed; i++) {
-                    stereosample.l = 0;stereosample.r = 0;
-
-                    if (counter < outsamples->size()) {
-                        outsamples->at(counter).l += stereosample.l;
-                        outsamples->at(counter).r += stereosample.r;
-                    } else {
-                        outsamples->push_back(stereosample);
-                    }
-
+                    samples.push_back(stereosample);
                     counter++;
                 }
             }
@@ -120,16 +113,22 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         else if (!strcmp(tokens[0].c_str(), "p")) { // 'p' for Pause
             double duration = atof(tokens[1].c_str());
 
-            StereoSample stereosample;
+            StereoSample stereosample = {0, 0};
 
             for (int i = 0; i < duration*SAMPLING_RATE/speed; i++) {
-                stereosample.l = 0;stereosample.r = 0;
-
                 samples.push_back(stereosample);
-
                 counter++;
             }
         }    
+
+        else if (!strcmp(tokens[0].c_str(), "w")) { // 'w' for Wait
+            double timestamp = atof(tokens[1].c_str()) * SAMPLING_RATE / speed;
+
+            while (counter < timestamp) {
+                samples.push_back({0, 0});
+                counter++;
+            }
+        }
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
             break;
