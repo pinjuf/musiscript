@@ -38,8 +38,6 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             line = replace_all(line, x.first, x.second);
         }
 
-        std::cout << line << std::endl;
-
         tokens = split_string(line, ' ');
 
         if (tokens.empty()) { // Empty line
