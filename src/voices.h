@@ -7,7 +7,6 @@
 #include <fstream>
 #include <cstdlib>
 #include <map>
-#include <regex>
 
 #include "wav.h"
 #include "sounds.h"

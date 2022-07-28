@@ -13,6 +13,15 @@ std::vector<std::string> split_string(std::string str, char delimiter) {
     return internal;
 }
 
+std::string replace_all(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    }
+    return str;
+}
+
 void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsamples) {
     std::ifstream file(filename);
     std::string line;
@@ -26,8 +35,10 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
     while(getline(file, line)) {
         for (auto const & x : defs) {
-            line = std::regex_replace(line, std::regex(x.first), x.second);
+            line = replace_all(line, x.first, x.second);
         }
+
+        std::cout << line << std::endl;
 
         tokens = split_string(line, ' ');
 
@@ -136,13 +147,13 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }
 
         else if (!strcmp(tokens[0].c_str(), "def")) { // 'def' sets a definiton to be followed
-            std::string value = "$";
+            std::string value = "";
             for (int i = 2; i < tokens.size(); i++) {
                 value += tokens[i];
                 if (i != tokens.size() - 1)
                     value += " ";
             }
-            defs[tokens[1]] = value;
+            defs["$"+tokens[1]] = value;
         }
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
