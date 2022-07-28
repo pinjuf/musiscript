@@ -157,6 +157,12 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
             break;
         }
+
+        // TODO: Add comments & logging system
+
+        else {
+            std::cerr << "[!] Unknown command: " << tokens[0] << std::endl;
+        }
     }
 
     for (int i = 0; i < effects.size(); i++)

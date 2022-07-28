@@ -7,6 +7,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <map>
+#include <iostream>
 
 #include "wav.h"
 #include "sounds.h"
