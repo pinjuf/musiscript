@@ -18,15 +18,20 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     std::string line;
     std::vector<std::string> tokens;
     effects.clear();
+    defs.clear();
 
     uint64_t counter = 0;
 
     std::vector<StereoSample> samples = {};
 
     while(getline(file, line)) {
+        for (auto const & x : defs) {
+            line = std::regex_replace(line, std::regex(x.first), x.second);
+        }
+
         tokens = split_string(line, ' ');
 
-        if (tokens.size() == 0) { // Empty line
+        if (tokens.empty()) { // Empty line
             continue;
         }
 
@@ -128,6 +133,16 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 samples.push_back({0, 0});
                 counter++;
             }
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "def")) { // 'def' sets a definiton to be followed
+            std::string value = "$";
+            for (int i = 2; i < tokens.size(); i++) {
+                value += tokens[i];
+                if (i != tokens.size() - 1)
+                    value += " ";
+            }
+            defs[tokens[1]] = value;
         }
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing

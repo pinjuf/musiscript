@@ -6,6 +6,8 @@
 #include <sstream>
 #include <fstream>
 #include <cstdlib>
+#include <map>
+#include <regex>
 
 #include "wav.h"
 #include "sounds.h"
@@ -26,6 +28,7 @@ class Voice {
         void read_from_file(char * filename, std::vector<StereoSample> * outsamples);
 
         std::vector<Effect> effects;
+        std::map<std::string,std::string> defs;
 };
 
 #endif
