@@ -159,7 +159,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             break;
         }
 
-        // TODO: Add comments & logging system
+        else if (tokens[0].c_str()[0] == '#') { // comment
+            continue;
+        }
 
         else {
             log(LOG_WARNING, ("Unknown command: " + tokens[0]).c_str());
