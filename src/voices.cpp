@@ -1,6 +1,7 @@
 #include "voices.h"
 #include "effects.h"
 #include "wav.h"
+#include "logging.h"
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -161,7 +162,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         // TODO: Add comments & logging system
 
         else {
-            std::cerr << "[!] Unknown command: " << tokens[0] << std::endl;
+            log(LOG_WARNING, ("Unknown command: " + tokens[0]).c_str());
         }
     }
 
