@@ -235,14 +235,18 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             subs[tokens[1]] = file.tellg();
 
             // do 'getlines' until an 'endsub' is found
+            int depth_counter = 1;
             std::string temp_line;
             while (getline(file, temp_line)) {
                 std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
                 if (temp_tokens.size()) {
-                    if (!strcmp(temp_tokens[0].c_str(), "endsub")) {
-                        break;
-                    }
+                    if (!strcmp(temp_tokens[0].c_str(), "endsub"))
+                        depth_counter--;
+                    else if (!strcmp(temp_tokens[0].c_str(), "sub"))
+                        depth_counter++;
                 }
+                if (depth_counter == 0)
+                    break;
             }
         }
 
