@@ -45,19 +45,63 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             continue;
         }
 
-        if (!strcmp(tokens[0].c_str(), "pan"))
+        if (!strcmp(tokens[0].c_str(), "pan")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (pan)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (pan)");
+            }
             pan = atof(tokens[1].c_str());
-        else if (!strcmp(tokens[0].c_str(), "volume"))
+        }
+        else if (!strcmp(tokens[0].c_str(), "volume")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (volume)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (volume)");
+            }
             volume = atof(tokens[1].c_str());
-        else if (!strcmp(tokens[0].c_str(), "speed"))
+        }
+        else if (!strcmp(tokens[0].c_str(), "speed")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (speed)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (speed)");
+            }
             speed = atof(tokens[1].c_str());
-        else if (!strcmp(tokens[0].c_str(), "sound"))
+        }
+        else if (!strcmp(tokens[0].c_str(), "sound")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (sound)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (sound)");
+            }
             sound = atoi(tokens[1].c_str());
-        else if (!strcmp(tokens[0].c_str(), "transpose"))
+        }
+        else if (!strcmp(tokens[0].c_str(), "transpose")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (transpose)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (transpose)");
+            }
             transpose = atoi(tokens[1].c_str());
+        }
 
         else if (!strcmp(tokens[0].c_str(), "effect")) {
             if (!strcmp(tokens[1].c_str(), "a")) { // 'a' for Add effect
+                if (tokens.size() < 3) {
+                    log(LOG_ERROR, "Not enough arguments (effect a)");
+                    continue;
+                }
                 Effect effect = Effect();
                 effect.effect = (EFFECTS)atoi(tokens[2].c_str());
                 for (int i = 3; i < tokens.size(); i++) {
@@ -65,11 +109,19 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
                 effects.push_back(effect); 
             }
-            if (!strcmp(tokens[0].c_str(), "c")) // 'c' for Clear effect
+            if (!strcmp(tokens[0].c_str(), "c")) { // 'c' for Clear effect
+                if (tokens.size() > 2) {
+                    log(LOG_WARNING, "Ignored extra arguments (effect c)");
+                }
                 effects.clear();
+            }   
         }
 
         else if (!strcmp(tokens[0].c_str(), "n")) { // 'n' for Note
+            if (tokens.size() < 3) {
+                log(LOG_ERROR, "Not enough arguments (n)");
+                continue;
+            }
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
             std::vector<double> freqs;
             for (int i = 0; i < note_tokens.size(); i++) {
@@ -126,10 +178,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }
 
         else if (!strcmp(tokens[0].c_str(), "p")) { // 'p' for Pause
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (p)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (p)");
+            }
             double duration = atof(tokens[1].c_str());
-
             StereoSample stereosample = {0, 0};
-
             for (int i = 0; i < duration*SAMPLING_RATE/speed; i++) {
                 samples.push_back(stereosample);
                 counter++;
@@ -137,6 +194,13 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }    
 
         else if (!strcmp(tokens[0].c_str(), "w")) { // 'w' for Wait
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (w)");
+                continue;
+            }
+            else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (w)");
+            }
             double timestamp = atof(tokens[1].c_str()) * SAMPLING_RATE / speed;
 
             while (counter < timestamp) {
@@ -146,6 +210,10 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }
 
         else if (!strcmp(tokens[0].c_str(), "def")) { // 'def' sets a definiton to be followed
+            if (tokens.size() < 3) {
+                log(LOG_ERROR, "Not enough arguments (def)");
+                continue;
+            }
             std::string value = "";
             for (int i = 2; i < tokens.size(); i++) {
                 value += tokens[i];
