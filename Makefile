@@ -3,7 +3,7 @@ CXXFLAGS =
 LDFLAGS =
 MAKEFLAGS = -j4
 
-OBJS = src/main.o src/wav.o src/sounds.o src/voices.o src/notes.o src/effects.o
+OBJS = src/main.o src/wav.o src/sounds.o src/voices.o src/notes.o src/effects.o src/logging.o
 TARGET = musiscript
 
 $(TARGET): $(OBJS)
