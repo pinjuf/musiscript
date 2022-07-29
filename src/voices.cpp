@@ -29,6 +29,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     std::vector<std::string> tokens;
     effects.clear();
     defs.clear();
+    subs.clear();
 
     uint64_t counter = 0;
 
@@ -221,6 +222,58 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     value += " ";
             }
             defs["$"+tokens[1]] = value;
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "sub")) { // 'sub' sets a subroutine
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (sub)");
+                continue;
+            } else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (sub)");
+            }
+
+            subs[tokens[1]] = file.tellg();
+
+            // do 'getlines' until an 'endsub' is found
+            std::string temp_line;
+            while (getline(file, temp_line)) {
+                std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
+                if (temp_tokens.size()) {
+                    if (!strcmp(temp_tokens[0].c_str(), "endsub")) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "endsub")) {
+            if (tokens.size() > 1) {
+                log(LOG_WARNING, "Ignored extra arguments (endsub)");
+            }
+
+            if (substack.size() > 0) {
+                file.seekg(substack.top());
+                substack.pop();
+            } else {
+                log(LOG_ERROR, "Found orphan 'endsub'");
+            }
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "call")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (call)");
+                continue;
+            } else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (call)");
+            }
+
+            if (subs.find(tokens[1]) == subs.end()) {
+                log(LOG_ERROR, ("Subroutine '" + tokens[1] + "' not found").c_str());
+                continue;
+            }
+
+            substack.push(file.tellg());
+            file.seekg(subs[tokens[1]]);
         }
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing

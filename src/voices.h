@@ -7,7 +7,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <map>
-#include <iostream>
+#include <stack>
 
 #include "wav.h"
 #include "sounds.h"
@@ -29,6 +29,9 @@ class Voice {
 
         std::vector<Effect> effects;
         std::map<std::string,std::string> defs;
+
+        std::stack<std::streampos> substack;
+        std::map<std::string,std::streampos> subs;
 };
 
 #endif
