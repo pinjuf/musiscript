@@ -32,6 +32,12 @@ void Effect::get_through_amp_effect(StereoSample * sample, uint64_t sample_count
             
             break;
         }
+        case AMP_A_ENVELOPE: {
+            double factor = fmin(1/settings[0]*sample_count/SAMPLING_RATE, 1);
+            l *= factor;
+            r *= factor;
+            break;
+        }
         case AMP_BITCRUSHER: {
             uint16_t l2 = (uint16_t) (l*WavFile::def_amp);
             uint16_t r2 = (uint16_t) (r*WavFile::def_amp);
@@ -101,6 +107,14 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 }
                 buffer->at(i).l = l/(settings[0]*2+1);
                 buffer->at(i).r = r/(settings[0]*2+1);
+            }
+            break;
+        }
+        case BUF_ECHO: {
+            uint64_t delay = settings[0]*SAMPLING_RATE;
+            for (uint64_t i = delay; i < buffer->size(); i++) {
+                buffer->at(i).l += buffer->at(i-delay).l*settings[1];
+                buffer->at(i).r += buffer->at(i-delay).r*settings[1];
             }
             break;
         }
