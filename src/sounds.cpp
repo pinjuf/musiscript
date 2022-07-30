@@ -1,4 +1,5 @@
 #include "sounds.h"
+#include <cmath>
 
 int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, double hz) {
     i /= hz;
@@ -25,8 +26,16 @@ int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, d
         case SND_CUSTOM0:
             out = sin(M_PI*2*i)*exp(fmod(i/25, 4));
             break;
-        case SND_CUSTOM1:
+        case SND_CUSTOM1: {
+            double saw_part = 2*(i-floor(i+1.0f/2));
+            double square_part = (4*floor(i)-2*floor(2*i)+1)/2;
+            if (std::abs(saw_part) > std::abs(square_part)) {
+                out = saw_part;
+            } else {
+                out = square_part;
+            }
             break;
+        }
         case SND_CUSTOM2:
             break;
         case SND_CUSTOM3:
