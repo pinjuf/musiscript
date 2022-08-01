@@ -34,7 +34,7 @@ class WavFile {
         WAVHEADER wavheader;
 
         constexpr static double max_amp = INT16_MAX;
-        constexpr static double def_amp = max_amp * 0.25;
+        constexpr static double def_amp = max_amp * 0.25; // the base amplitude, not too silent, but leaves enough room for some fun
 
         std::vector<StereoSample> samples;
 
