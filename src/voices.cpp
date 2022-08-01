@@ -174,7 +174,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 counter++;
             }
 
-            if (durations.size()==2) { // 2 durations were given, use the second one for a pause immediately after the first one
+            if (durations.size()>1) { // 2 or more durations were given, use the second one for a pause immediately after the first one
+                if (durations.size()>2)
+                    log(LOG_WARNING, "Ignored extra durations (n)");
                 stereosample.l = 0;stereosample.r = 0;
                 for (int i = 0; i < durations[1]*SAMPLING_RATE/speed; i++) {
                     samples.push_back(stereosample);
