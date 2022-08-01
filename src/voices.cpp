@@ -2,6 +2,7 @@
 #include "effects.h"
 #include "wav.h"
 #include "logging.h"
+#include <stdexcept>
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -56,7 +57,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (pan)");
             }
-            pan = atof(tokens[1].c_str());
+            try {
+                pan = std::stod(tokens[1]);
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (pan)");
+            }
         }
         else if (!strcmp(tokens[0].c_str(), "volume")) {
             if (tokens.size() < 2) {
@@ -66,7 +71,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (volume)");
             }
-            volume = atof(tokens[1].c_str());
+            try {
+                volume = std::stod(tokens[1]);
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (volume)");
+            }
         }
         else if (!strcmp(tokens[0].c_str(), "speed")) {
             if (tokens.size() < 2) {
@@ -76,7 +85,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (speed)");
             }
-            speed = atof(tokens[1].c_str());
+            try {
+                speed = std::stod(tokens[1]);
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (speed)");
+            }
         }
         else if (!strcmp(tokens[0].c_str(), "sound")) {
             if (tokens.size() < 2) {
@@ -86,7 +99,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (sound)");
             }
-            sound = atoi(tokens[1].c_str());
+            try {
+                sound = std::stoi(tokens[1]);
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (sound)");
+            }
         }
         else if (!strcmp(tokens[0].c_str(), "transpose")) {
             if (tokens.size() < 2) {
@@ -96,7 +113,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (transpose)");
             }
-            transpose = atoi(tokens[1].c_str());
+            try {
+                transpose = std::stoi(tokens[1]);
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (transpose)");
+            }
         }
 
         else if (!strcmp(tokens[0].c_str(), "effect")) {
@@ -106,9 +127,19 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     continue;
                 }
                 Effect effect = Effect();
-                effect.effect = (EFFECTS)atoi(tokens[2].c_str());
+                try {
+                    effect.effect = (EFFECTS)stoi(tokens[2]);
+                } catch (std::invalid_argument) {
+                    log(LOG_ERROR, "Invalid argument (effect a)");
+                    continue;
+                }
                 for (int i = 3; i < tokens.size(); i++) {
-                    effect.settings[i-3] = atof(tokens[i].c_str());
+                    try {
+                        effect.settings[i-3] = std::stod(tokens[i].c_str());
+                    } catch (std::invalid_argument) {
+                        log(LOG_ERROR, "Invalid argument (effect a)");
+                        continue;
+                    }
                 }
                 effects.push_back(effect); 
             }
@@ -129,7 +160,13 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             std::vector<double> freqs;
             for (int i = 0; i < note_tokens.size(); i++) {
                 if (note_tokens[i][0] == 'r') { // 'r' prefix: raw frequency input
-                    freqs.push_back(atof(note_tokens[i].c_str() + 1));
+                    try {
+                        freqs.push_back(std::stod(note_tokens[i].c_str() + 1));
+                    } catch (std::invalid_argument) {
+                        log(LOG_ERROR, "Invalid argument (n)");
+                        continue;
+                    }
+
                 } else {
                     freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str(), transpose));
                 }
@@ -138,7 +175,12 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             std::vector<std::string> duration_tokens = split_string(tokens[2], ',');
             std::vector<double> durations;
             for (int i = 0; i < duration_tokens.size(); i++) {
-                durations.push_back(atof(duration_tokens[i].c_str()));
+                try {
+                    durations.push_back(std::stod(duration_tokens[i].c_str()));
+                } catch (std::invalid_argument) {
+                    log(LOG_ERROR, "Invalid argument (n)");
+                    continue;
+                }
             }
 
             StereoSample stereosample;
@@ -190,7 +232,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (p)");
             }
-            double duration = atof(tokens[1].c_str());
+
+            double duration;
+            try {
+                duration = std::stod(tokens[1].c_str());
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (p)");
+                continue;
+            }
+
             StereoSample stereosample = {0, 0};
             for (int i = 0; i < duration*SAMPLING_RATE/speed; i++) {
                 samples.push_back(stereosample);
@@ -206,7 +256,14 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (w)");
             }
-            double timestamp = atof(tokens[1].c_str()) * SAMPLING_RATE / speed;
+
+            double timestamp;
+            try {
+                timestamp = std::stod(tokens[1].c_str()) * SAMPLING_RATE / speed;
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (w)");
+                continue;
+            }
 
             while (counter < timestamp) {
                 samples.push_back({0, 0});
@@ -292,7 +349,14 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 log(LOG_WARNING, "Ignored extra arguments (rep)");
             }
 
-            int n = atoi(tokens[1].c_str());
+            int n;
+            try {
+                n = atoi(tokens[1].c_str());
+            } catch (std::invalid_argument) {
+                log(LOG_ERROR, "Invalid argument (rep)");
+                continue;
+            }
+
             reps.push(n);
             repstack.push(file.tellg());
         }
