@@ -133,7 +133,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
             }
 
-            std::vector<std::string> duration_tokens = split_string(tokens[2], '+');
+            std::vector<std::string> duration_tokens = split_string(tokens[2], ',');
             std::vector<double> durations;
             for (int i = 0; i < duration_tokens.size(); i++) {
                 durations.push_back(atof(duration_tokens[i].c_str()));

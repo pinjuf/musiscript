@@ -22,12 +22,18 @@ A musical scripting language.
 - `volume <float>`: set the volume
 - `speed <float>`: set the speed, this does not affect pitch and should be used only once at the beginning of a script.
 - `sound <int>`: select the sound, as listed in `src/sounds.h` and defined in `src/sounds.cpp`
-- transpose <semitones>`: begin transposing
+- `transpose <semitones>`: begin transposing
 - `n <pitches> <durations>`: play a sound, multiple pitches can be given as a comma (no spaces) separated list,
-the duration can either be 1 value or 2 (separated by a `+`), where the first dictates the base duration and the second a pause directly after the sound (for repeated, distinct notes)
+the duration can either be 1 value or 2 (separated by a `,`), where the first dictates the base duration and the second a pause directly after the sound (for repeated, distinct notes)
 - `p <duration>`: pause for the specified duration
 - `end`: mark the end of a song
 - `effect`: usage as `effect a <index> <settings>` adds an effect to the effect stack by its index and initializes it with the given setting, usage as `effect c` clears the effect stack
+- `w <timestamp>`: waits until a certain (absolute) timestamp is reached, can be used to sync voices
+- `def <varname> <value>`: defines a variable and initializes it with a value (that may include spaces), the variable can be used with a `$`-prefix
+- `sub <subname>`: defines a subroutine, all commands following it are part of it until an `endsub` is reached, nested subs are possible
+- `endsub`: ends a subroutine definition, see above
+- `call <subname>`: calls a subroutine
+- `#<comment>`: a comment, ignored by parsing
 
 ### Pitches
 
