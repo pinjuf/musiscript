@@ -6,6 +6,8 @@
 #include <fstream>
 #include <cmath>
 
+#include "logging.h"
+
 #define SAMPLING_RATE 44100
 
 typedef struct StereoSample {

@@ -35,6 +35,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
     std::vector<StereoSample> samples = {};
 
+    if (!file.is_open()) {
+        log(LOG_ERROR, ("Could not open voice file " + std::string(filename)).c_str());
+        return;
+    }
+
     while(getline(file, line)) {
         for (auto const & x : defs) {
             line = replace_all(line, x.first, x.second);
