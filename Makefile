@@ -21,3 +21,11 @@ clean:
 
 play: run
 	ffplay data/out.wav -showmode 1 2> /dev/null
+
+vim_install: util/musiscript.vim
+	mkdir -p ~/.vim/syntax
+	cp util/musiscript.vim ~/.vim/syntax/musiscript.vim
+
+nvim_install: util/musiscript.vim
+	mkdir -p ~/.config/nvim/syntax
+	cp util/musiscript.vim ~/.config/nvim/syntax/musiscript.vim
