@@ -18,6 +18,6 @@ highlight link musiscriptFunction Function
 syntax match musiscriptComment /\s*#.*$/
 highlight link musiscriptComment Comment
 
-syntax match musiscriptPitch /[a-h,A-H]\d\+[+,-]\=/
+syntax match musiscriptPitch /[a-h,A-H]\d\+[+,-,#,b]\=/
 syntax match musiscriptPitch /r\d\+\.\=\d\+/
 highlight link musiscriptPitch Constant
