@@ -32,6 +32,9 @@ class Voice {
 
         std::stack<std::streampos> substack;
         std::map<std::string,std::streampos> subs;
+
+        std::stack<std::streampos> repstack;
+        std::stack<int> reps;
 };
 
 #endif

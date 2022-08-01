@@ -7,6 +7,7 @@ endif
 let b:current_syntax = "musiscript"
 
 syntax keyword musiscriptKeyword sub endsub
+syntax keyword musiscriptKeyword rep endrep
 syntax keyword musiscriptKeyword end
 highlight link musiscriptKeyword Keyword
 

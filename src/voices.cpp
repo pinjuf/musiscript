@@ -27,9 +27,6 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     std::ifstream file(filename);
     std::string line;
     std::vector<std::string> tokens;
-    effects.clear();
-    defs.clear();
-    subs.clear();
 
     uint64_t counter = 0;
 
@@ -285,6 +282,33 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             substack.push(file.tellg());
             file.seekg(subs[tokens[1]]);
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "rep")) { // 'rep' repeats the following code n times
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (rep)");
+                continue;
+            } else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (rep)");
+            }
+
+            int n = atoi(tokens[1].c_str());
+            reps.push(n);
+            repstack.push(file.tellg());
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "endrep")) { // marks the end of a rep
+            if (reps.empty()) {
+                log(LOG_ERROR, "Found orphan 'endrep'");
+                continue;
+            }
+            reps.top()--;
+            if (reps.top()) {
+                file.seekg(repstack.top());
+            } else {
+                reps.pop();
+                repstack.pop();
+            }
         }
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
