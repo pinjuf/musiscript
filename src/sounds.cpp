@@ -20,7 +20,7 @@ int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, d
             out = 2*(i-floor(i+1.0f/2));
             break;
         case WHITE_NOISE:
-            out = (rand() % 32768) / 32768.0f;
+            out = ((rand() % (32768<<1))-32768) / 32768.0f;
             break;
 
         case SND_CUSTOM0:
