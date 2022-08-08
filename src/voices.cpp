@@ -99,10 +99,24 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (sound)");
             }
-            try {
-                sound = std::stoi(tokens[1]);
-            } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (sound)");
+
+            sound = SILENCE;
+            for (int i = 0; i < sizeof(SOUNDNAMES)/sizeof(SOUNDNAMES[0]); i++) {
+                if (!strcmp(tokens[1].c_str(), SOUNDNAMES[i])) {
+                    sound = (SOUNDS)i;
+                    break;
+                }
+            }
+
+            if (sound == SILENCE) {
+                try {
+                    sound = (SOUNDS)std::stoi(tokens[1]);
+                    log(LOG_WARNING, "Using a sound index is deprecated and may become problematic in the future. Please use the sound name instead.");
+                } catch (std::invalid_argument) {}
+            }
+
+            if (sound == SILENCE) {
+                log(LOG_ERROR, ("Unknown/silent sound name: " + tokens[1]).c_str());
             }
         }
         else if (!strcmp(tokens[0].c_str(), "transpose")) {

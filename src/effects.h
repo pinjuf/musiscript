@@ -24,7 +24,7 @@ enum EFFECTS {
     EFF_CUSTOM3,
 };
 
-constexpr char EFFECTNAMES[32][15] {
+constexpr char EFFECTNAMES[15][32] {
     "NONE",
     "CUTOFF",
     "POW",
