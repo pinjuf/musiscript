@@ -24,9 +24,27 @@ enum EFFECTS {
     EFF_CUSTOM3,
 };
 
+constexpr char EFFECTNAMES[32][15] {
+    "NONE",
+    "CUTOFF",
+    "POW",
+    "TREMOLO",
+    "AD_ENVELOPE",
+    "A_ENVELOPE",
+    "BITCRUSHER",
+    "VIBRATO",
+    "WAH",
+    "SMOOTH",
+    "ECHO",
+    "CUSTOM0",
+    "CUSTOM1",
+    "CUSTOM2",
+    "CUSTOM3",
+};
+
 class Effect {
     public:
-        EFFECTS effect;
+        EFFECTS effect = NO_EFFECT;
         double settings[32] = {0};
         void get_through_amp_effect(StereoSample * sample, uint64_t sample_count);
         double get_through_freq_effect(double freq, uint64_t sample_count);

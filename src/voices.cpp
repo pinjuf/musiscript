@@ -127,12 +127,25 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     continue;
                 }
                 Effect effect = Effect();
-                try {
-                    effect.effect = (EFFECTS)stoi(tokens[2]);
-                } catch (std::invalid_argument) {
-                    log(LOG_ERROR, "Invalid argument (effect a)");
-                    continue;
+
+                for (int i = 0; i < sizeof(EFFECTNAMES)/sizeof(EFFECTNAMES[0]); i++) {
+                    if (!strcmp(EFFECTNAMES[i], tokens[2].c_str())) {
+                        effect.effect = (EFFECTS)i;
+                        break;
+                    }
                 }
+
+                if (effect.effect == NO_EFFECT) {
+                    try {
+                        effect.effect = (EFFECTS)std::stoi(tokens[2]);
+                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.");
+                    } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
+                }
+
+                if (effect.effect == NO_EFFECT) {
+                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str());
+                }
+
                 for (int i = 3; i < tokens.size(); i++) {
                     try {
                         effect.settings[i-3] = std::stod(tokens[i].c_str());
@@ -143,12 +156,17 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
                 effects.push_back(effect); 
             }
-            if (!strcmp(tokens[0].c_str(), "c")) { // 'c' for Clear effect
+
+            else if (!strcmp(tokens[0].c_str(), "c")) { // 'c' for Clear effect
                 if (tokens.size() > 2) {
                     log(LOG_WARNING, "Ignored extra arguments (effect c)");
                 }
                 effects.clear();
             }   
+
+            else {
+                log(LOG_ERROR, "Unknown effect command");
+            }
         }
 
         else if (!strcmp(tokens[0].c_str(), "n")) { // 'n' for Note
