@@ -46,9 +46,9 @@ class Effect {
     public:
         EFFECTS effect = NO_EFFECT;
         double settings[32] = {0};
-        void get_through_amp_effect(StereoSample * sample, uint64_t sample_count);
-        double get_through_freq_effect(double freq, uint64_t sample_count);
-        uint64_t get_through_i_effect(uint64_t i, uint64_t sample_count);
+        void get_through_amp_effect(StereoSample * sample, size_t sample_count);
+        double get_through_freq_effect(double freq, size_t sample_count);
+        size_t get_through_i_effect(size_t i, size_t sample_count);
         void get_through_buffer_effect(std::vector<StereoSample> * buffer);
 };
 

@@ -1,7 +1,7 @@
 #include "effects.h"
 #include "wav.h"
 
-void Effect::get_through_amp_effect(StereoSample * sample, uint64_t sample_count) {
+void Effect::get_through_amp_effect(StereoSample * sample, size_t sample_count) {
     double l = sample->l/WavFile::def_amp;
     double r = sample->r/WavFile::def_amp;
 
@@ -59,7 +59,7 @@ void Effect::get_through_amp_effect(StereoSample * sample, uint64_t sample_count
     sample->r = r*WavFile::def_amp;
 }
 
-double Effect::get_through_freq_effect(double freq, uint64_t sample_count) {
+double Effect::get_through_freq_effect(double freq, size_t sample_count) {
     switch (effect) {
         case NO_EFFECT:
         default:
@@ -69,7 +69,7 @@ double Effect::get_through_freq_effect(double freq, uint64_t sample_count) {
     return freq;
 }
 
-uint64_t Effect::get_through_i_effect(uint64_t i, uint64_t sample_count) {
+size_t Effect::get_through_i_effect(size_t i, size_t sample_count) {
     switch (effect) {
         case I_VIBRATO: {
             double timeinto = ((double) sample_count)/SAMPLING_RATE;
@@ -92,11 +92,11 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
     switch (effect) {
         case BUF_SMOOTH: {
             std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
-            for (uint64_t i = 0; i < buffer->size(); i++) {
+            for (size_t i = 0; i < buffer->size(); i++) {
                 tempbuffer->push_back(buffer->at(i));
             }
 
-            for (uint64_t i = 0; i < buffer->size(); i++) {
+            for (size_t i = 0; i < buffer->size(); i++) {
                 int64_t l = 0;
                 int64_t r = 0;
                 for (int j = -settings[0]; j <= settings[0]; j++) {
@@ -111,8 +111,8 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
             break;
         }
         case BUF_ECHO: {
-            uint64_t delay = settings[0]*SAMPLING_RATE;
-            for (uint64_t i = delay; i < buffer->size(); i++) {
+            size_t delay = settings[0]*SAMPLING_RATE;
+            for (size_t i = delay; i < buffer->size(); i++) {
                 buffer->at(i).l += buffer->at(i-delay).l*settings[1];
                 buffer->at(i).r += buffer->at(i-delay).r*settings[1];
             }
