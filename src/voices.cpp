@@ -142,6 +142,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     continue;
                 }
                 Effect effect = Effect();
+                effect.start = counter;
 
                 for (int i = 0; i < sizeof(EFFECTNAMES)/sizeof(EFFECTNAMES[0]); i++) {
                     if (!strcmp(EFFECTNAMES[i], tokens[2].c_str())) {
@@ -172,12 +173,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 effects.push_back(effect); 
             }
 
-            else if (!strcmp(tokens[0].c_str(), "c")) { // 'c' for Clear effect
+            else if (!strcmp(tokens[1].c_str(), "c")) { // 'c' for Clear effect
                 if (tokens.size() > 2) {
                     log(LOG_WARNING, "Ignored extra arguments (effect c)");
                 }
-                effects.clear();
-            }   
+
+                for (size_t i = 0; i < effects.size(); i++) {
+                    effects[i].end = counter; // Keep the effect in the stack, but mark it as finished
+                }
+            }
 
             else {
                 log(LOG_ERROR, "Unknown effect command");
@@ -229,20 +233,20 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
                 size_t baked_i = i; // Used mainly for vibrato
                 for (int k = 0; k < effects.size(); k++) {
-                    baked_i = effects[k].get_through_i_effect(baked_i, i);
+                    baked_i = effects[k].get_through_i_effect(baked_i, i, counter);
                 }
 
                 for (int j = 0; j < freqs.size(); j++) {
                     double baked_freq = freqs[j];
                     for (int k = 0; k < effects.size(); k++)
-                        baked_freq = effects[k].get_through_freq_effect(freqs[j], i);
+                        baked_freq = effects[k].get_through_freq_effect(freqs[j], i, counter);
                     // Get the amplitude, add the panning effect and divide by the number of frequencies to get the average amplitude
                     stereosample.l += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * (1 - pan) / freqs.size();
                     stereosample.r += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
                 }
 
                 for (int j = 0; j < effects.size(); j++)
-                     effects[j].get_through_amp_effect(&stereosample, i);
+                     effects[j].get_through_amp_effect(&stereosample, i, counter);
 
                 stereosample.l *= volume;
                 stereosample.r *= volume;
