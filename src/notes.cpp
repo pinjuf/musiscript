@@ -1,10 +1,16 @@
 #include "notes.h"
+#include <stdexcept>
 
 double get_freq_by_name(char * name, int transpose) {
-    char base = name[0];
-    if (isupper(base)) base += 32;
-
     double out;
+
+    char base = name[0];
+    if (isupper(base)) base += 32; // Lowercae the base
+    
+    size_t len = 0;
+    for (;name[len];len++);
+    if (len < 2)
+        return -1;
 
     for (int i = 2; name[i]; i++) {
         switch (name[i]) {
@@ -21,7 +27,12 @@ double get_freq_by_name(char * name, int transpose) {
         }
     }
 
-    int octave = atoi(name+1) - 4;
+    int octave;
+    try {
+        octave = std::stoi(name+1) - 4; // Reference frequency is 4 octaves up
+    } catch (std::invalid_argument) {
+        return -1;
+    }
 
     switch (base) {
         case 'a':
@@ -51,6 +62,8 @@ double get_freq_by_name(char * name, int transpose) {
             out = A4_FREQ * pow(HALFTONE_STEP, 10+transpose);
             octave--;
             break;
+        default:
+            return -1;
     }
 
     if (octave>0) out *= 1<<octave;

@@ -1,5 +1,6 @@
 #include "voices.h"
 #include "effects.h"
+#include "notes.h"
 #include "wav.h"
 #include "logging.h"
 #include <stdexcept>
@@ -200,7 +201,13 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     }
 
                 } else {
-                    freqs.push_back(get_freq_by_name((char*)note_tokens[i].c_str(), transpose));
+                    double freq = get_freq_by_name((char*)note_tokens[i].c_str(), transpose);
+                    if (freq >= 0) {
+                        freqs.push_back(freq);
+                    } else {
+                        log(LOG_ERROR, "Invalid note name (n)");
+                        continue;
+                    }
                 }
             }
 

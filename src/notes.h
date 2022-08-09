@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cctype>
 #include <cstdlib>
+#include <string>
 
 #define A4_FREQ 440
 #define HALFTONE_STEP pow(2, 1.0f/12)
