@@ -1,8 +1,6 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
-#include <iostream>
-
 enum LOGLEVEL {
     LOG_DEBUG,
     LOG_INFO,

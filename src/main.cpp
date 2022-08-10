@@ -2,7 +2,6 @@
 
 #include "wav.h"
 #include "voices.h"
-
 #include "config.h"
 #include "logging.h"
 

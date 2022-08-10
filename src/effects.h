@@ -1,11 +1,6 @@
 #ifndef EFFECTS_H
 #define EFFECTS_H
 
-#include <cmath>
-#include <cstdint>
-#include <limits>
-#include <cstring>
-
 #include "wav.h"
 
 enum EFFECTS {

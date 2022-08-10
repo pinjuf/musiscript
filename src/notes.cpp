@@ -1,5 +1,10 @@
-#include "notes.h"
 #include <stdexcept>
+#include <cmath>
+#include <cctype>
+#include <cstdlib>
+#include <string>
+
+#include "notes.h"
 
 double get_freq_by_name(char * name, int transpose) {
     double out;

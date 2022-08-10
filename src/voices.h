@@ -2,10 +2,6 @@
 #define VOICES_H
 
 #include <vector>
-#include <string.h>
-#include <sstream>
-#include <fstream>
-#include <cstdlib>
 #include <map>
 #include <stack>
 

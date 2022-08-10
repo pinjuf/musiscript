@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "logging.h"
 
 LOGLEVEL loglevel = LOG_INFO;

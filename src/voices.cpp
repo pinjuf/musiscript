@@ -1,3 +1,9 @@
+#include <cstdlib>
+#include <string.h>
+#include <sstream>
+#include <fstream>
+#include <cstdint>
+
 #include "voices.h"
 #include "effects.h"
 #include "notes.h"

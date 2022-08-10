@@ -1,3 +1,7 @@
+#include <cmath>
+#include <cstdint>
+#include <cstring>
+
 #include "effects.h"
 #include "wav.h"
 

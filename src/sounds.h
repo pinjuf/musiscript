@@ -1,11 +1,6 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#include <cstdint>
-#include <cmath>
-#include <random>
-#include <cstring>
-
 #include "wav.h"
 
 enum SOUNDS {

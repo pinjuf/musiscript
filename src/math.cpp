@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "math.h"
 
 void fft(double * in, double * out, int n, int sign) {

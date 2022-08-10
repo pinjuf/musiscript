@@ -1,5 +1,8 @@
-#include "wav.h"
+#include <fstream>
+#include <cmath>
 #include <cstdlib>
+
+#include "wav.h"
 
 void WavFile::fill_fmtvalues() {
     wavheader.ByteRate = wavheader.SampleRate * wavheader.BitsPerSample * wavheader.NumChannels / 8;

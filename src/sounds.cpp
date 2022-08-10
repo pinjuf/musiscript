@@ -1,5 +1,9 @@
-#include "sounds.h"
+#include <cstdint>
 #include <cmath>
+#include <random>
+#include <cstring>
+
+#include "sounds.h"
 
 int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, double hz) {
     i /= hz;
