@@ -197,7 +197,8 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
 
                 for (size_t i = 0; i < effects.size(); i++) {
-                    effects[i].end = counter; // Keep the effect in the stack, but mark it as finished
+                    if (effects[i].end > counter) // Has the effect already been ended?
+                        effects[i].end = counter; // Keep the effect in the stack, but mark it as finished
                 }
             }
 
@@ -223,7 +224,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
 
                 for (size_t i = 0; i < effects.size(); i++) {
-                    if (effects[i].effect == r) {
+                    if (effects[i].effect == r && effects[i].end > counter) {
                         effects[i].end = counter;
                         break;
                     }
@@ -252,7 +253,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 }
 
                 for (size_t i = 0; i < effects.size(); i++) {
-                    if (effects[i].effect == r) {
+                    if (effects[i].effect == r && effects[i].end > counter) {
                         effects[i].end = counter;
                     }
                 }
