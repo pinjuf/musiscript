@@ -14,6 +14,7 @@ highlight link musiscriptKeyword Keyword
 syntax keyword musiscriptFunction pan volume speed sound transpose
 syntax keyword musiscriptFunction effect call def
 syntax keyword musiscriptFunction n p w
+syntax keyword musiscriptFunction echo
 highlight link musiscriptFunction Function
 
 syntax match musiscriptComment /\s*#.*$/

@@ -523,6 +523,16 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
         }
 
+        else if (!strcmp(tokens[0].c_str(), "echo")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (echo)", true);
+                continue;
+            }
+            std::string l = "(echo) ";
+            l += line.c_str()+sizeof("echo");
+            log(LOG_INFO, l.c_str(), true);
+        }
+
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
             break;
         }
