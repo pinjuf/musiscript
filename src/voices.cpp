@@ -529,6 +529,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 continue;
             }
             std::string l = "(echo) ";
+            size_t start = line.find_first_not_of(" \n\r\t\f\v");
+            if (start != std::string::npos)
+                line = line.substr(start);
             l += line.c_str()+sizeof("echo");
             log(LOG_INFO, l.c_str(), true);
         }
