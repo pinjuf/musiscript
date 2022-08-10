@@ -7,4 +7,6 @@
 
 #define DEF_LOG_LEVEL LOG_INFO
 
+#define DO_COLOR_LOG true
+
 #endif

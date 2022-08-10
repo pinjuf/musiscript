@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include "config.h"
+
 #define RESET_COLOR "\x1B[0m"
 
 enum LOGLEVEL {
@@ -22,11 +24,19 @@ constexpr const char ** LOGPREFIXES = (const char *[]) {
 };
 
 constexpr const char ** LOGCOLORS = (const char *[]) {
+#if DO_COLOR_LOG
     (char *)"\x1b[36m",
     (char *)"\x1b[32m",
     (char *)"\x1b[33m",
     (char *)"\x1b[31m",
     (char *)"\x1b[35m",
+#else
+    (char *)"",
+    (char *)"",
+    (char *)"",
+    (char *)"",
+    (char *)"",
+#endif
 };
 
 LOGLEVEL getloglevel();
