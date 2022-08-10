@@ -67,7 +67,8 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     set_line_num_ptr(&line_num); // Connect to logging system
 
     while(getline(file, line)) {
-        line_num = get_current_line(file);
+        line_num = get_current_line(file); // Update line number for logging system
+
         for (auto const & x : defs) { // Replace all defined variables
             line = replace_all(line, x.first, x.second);
         }
