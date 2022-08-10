@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <stack>
+#include <string>
 
 #include "wav.h"
 #include "sounds.h"
@@ -23,6 +24,7 @@ class Voice {
 
         void read_from_file(char * filename, std::vector<StereoSample> * outsamples);
 
+    private:
         std::vector<Effect> effects;
         std::map<std::string,std::string> defs;
 
@@ -31,6 +33,8 @@ class Voice {
 
         std::stack<std::streampos> repstack;
         std::stack<int> reps;
+
+        std::string replace_defs_with_vals(std::string line);
 };
 
 #endif

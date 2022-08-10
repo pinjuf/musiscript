@@ -49,6 +49,13 @@ size_t get_current_line(std::ifstream& file) {
     return line_count;
 }
 
+std::string Voice::replace_defs_with_vals(std::string line) {
+    for (auto const & x : defs) { // Replace all defined variables
+        line = replace_all(line, x.first, x.second);
+    }
+    return line;
+}
+
 void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsamples) {
     std::ifstream file(filename);
     std::string line;
@@ -69,9 +76,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     while(getline(file, line)) {
         line_num = get_current_line(file); // Update line number for logging system
 
-        for (auto const & x : defs) { // Replace all defined variables
-            line = replace_all(line, x.first, x.second);
-        }
+        line = replace_defs_with_vals(line);
 
         tokens = split_string(line, ' ');
 
