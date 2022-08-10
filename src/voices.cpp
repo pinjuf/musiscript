@@ -73,7 +73,6 @@ std::string Voice::replace_rpns_with_vals(std::string line) {
         std::stringstream ss;
         ss << rpn_result;
         line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), ss.str());
-        start_pos = end_pos;
     }
 
     return line;
