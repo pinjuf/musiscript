@@ -29,3 +29,9 @@ vim_install: util/musiscript.vim
 nvim_install: util/musiscript.vim
 	mkdir -p ~/.config/nvim/syntax
 	cp util/musiscript.vim ~/.config/nvim/syntax/musiscript.vim
+
+install: $(TARGET)
+	cp $(TARGET) /usr/bin/
+
+uninstall:
+	rm -f /usr/bin/$(TARGET)
