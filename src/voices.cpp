@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstdint>
+#include <iostream>
 
 #include "voices.h"
 #include "effects.h"
@@ -31,12 +32,30 @@ std::string replace_all(std::string& str, const std::string& from, const std::st
     return str;
 }
 
+size_t get_current_line(std::ifstream& file) {
+    size_t current_pos = file.tellg();
+    size_t original_pos = current_pos;
+    size_t line_count = 0;
+    while(current_pos > 0) {
+        current_pos--;
+        file.seekg(current_pos);
+        if (file.peek() == '\n') {
+            line_count++;
+        }
+    }
+
+    file.seekg(original_pos);
+
+    return line_count;
+}
+
 void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsamples) {
     std::ifstream file(filename);
     std::string line;
     std::vector<std::string> tokens;
 
     size_t counter = 0;
+    size_t line_num;
 
     std::vector<StereoSample> samples = {};
 
@@ -45,7 +64,10 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         return;
     }
 
+    set_line_num_ptr(&line_num); // Connect to logging system
+
     while(getline(file, line)) {
+        line_num = get_current_line(file);
         for (auto const & x : defs) { // Replace all defined variables
             line = replace_all(line, x.first, x.second);
         }
@@ -58,53 +80,53 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         if (!strcmp(tokens[0].c_str(), "pan")) {
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (pan)");
+                log(LOG_ERROR, "Not enough arguments (pan)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (pan)");
+                log(LOG_WARNING, "Ignored extra arguments (pan)", true);
             }
             try {
                 pan = std::stod(tokens[1]);
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (pan)");
+                log(LOG_ERROR, "Invalid argument (pan)", true);
             }
         }
         else if (!strcmp(tokens[0].c_str(), "volume")) {
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (volume)");
+                log(LOG_ERROR, "Not enough arguments (volume)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (volume)");
+                log(LOG_WARNING, "Ignored extra arguments (volume)", true);
             }
             try {
                 volume = std::stod(tokens[1]);
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (volume)");
+                log(LOG_ERROR, "Invalid argument (volume)", true);
             }
         }
         else if (!strcmp(tokens[0].c_str(), "speed")) {
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (speed)");
+                log(LOG_ERROR, "Not enough arguments (speed)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (speed)");
+                log(LOG_WARNING, "Ignored extra arguments (speed)", true);
             }
             try {
                 speed = std::stod(tokens[1]);
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (speed)");
+                log(LOG_ERROR, "Invalid argument (speed)", true);
             }
         }
         else if (!strcmp(tokens[0].c_str(), "sound")) {
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (sound)");
+                log(LOG_ERROR, "Not enough arguments (sound)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (sound)");
+                log(LOG_WARNING, "Ignored extra arguments (sound)", true);
             }
 
             sound = get_sound_by_name(tokens[1].c_str());
@@ -112,33 +134,33 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             if (sound == SILENCE) {
                 try {
                     sound = (SOUNDS)std::stoi(tokens[1]);
-                    log(LOG_WARNING, "Using a sound index is deprecated and may become problematic in the future. Please use the sound name instead.");
+                    log(LOG_WARNING, "Using a sound index is deprecated and may become problematic in the future. Please use the sound name instead.", true);
                 } catch (std::invalid_argument) {}
             }
 
             if (sound == SILENCE) {
-                log(LOG_ERROR, ("Unknown/silent sound name: " + tokens[1]).c_str());
+                log(LOG_ERROR, ("Unknown/silent sound name: " + tokens[1]).c_str(), true);
             }
         }
         else if (!strcmp(tokens[0].c_str(), "transpose")) {
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (transpose)");
+                log(LOG_ERROR, "Not enough arguments (transpose)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (transpose)");
+                log(LOG_WARNING, "Ignored extra arguments (transpose)", true);
             }
             try {
                 transpose = std::stoi(tokens[1]);
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (transpose)");
+                log(LOG_ERROR, "Invalid argument (transpose)", true);
             }
         }
 
         else if (!strcmp(tokens[0].c_str(), "effect")) {
             if (!strcmp(tokens[1].c_str(), "a")) { // 'a' for Add effect
                 if (tokens.size() < 3) {
-                    log(LOG_ERROR, "Not enough arguments (effect a)");
+                    log(LOG_ERROR, "Not enough arguments (effect a)", true);
                     continue;
                 }
                 Effect effect = Effect();
@@ -149,19 +171,19 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 if (effect.effect == NO_EFFECT) {
                     try {
                         effect.effect = (EFFECTS)std::stoi(tokens[2]);
-                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.");
+                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.", true);
                     } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
                 }
 
                 if (effect.effect == NO_EFFECT) {
-                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str());
+                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str(), true);
                 }
 
                 for (int i = 3; i < tokens.size(); i++) {
                     try {
                         effect.settings[i-3] = std::stod(tokens[i].c_str());
                     } catch (std::invalid_argument) {
-                        log(LOG_ERROR, "Invalid argument (effect a)");
+                        log(LOG_ERROR, "Invalid argument (effect a)", true);
                         continue;
                     }
                 }
@@ -170,7 +192,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             else if (!strcmp(tokens[1].c_str(), "c")) { // 'c' for Clear effect
                 if (tokens.size() > 2) {
-                    log(LOG_WARNING, "Ignored extra arguments (effect c)");
+                    log(LOG_WARNING, "Ignored extra arguments (effect c)", true);
                 }
 
                 for (size_t i = 0; i < effects.size(); i++) {
@@ -180,23 +202,23 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             else if (!strcmp(tokens[1].c_str(), "r")) { // 'r' for Remove FIRST FOUND effect
                 if (tokens.size() < 3) {
-                    log(LOG_ERROR, "Not enough arguments (effect r)");
+                    log(LOG_ERROR, "Not enough arguments (effect r)", true);
                     continue;
                 }
                 else if (tokens.size() > 3) {
-                    log(LOG_WARNING, "Ignored extra arguments (effect r)");
+                    log(LOG_WARNING, "Ignored extra arguments (effect r)", true);
                 }
 
                 EFFECTS r = Effect::get_effect_by_name(tokens[2].c_str());
                 if (r == NO_EFFECT) {
                     try {
                         r = (EFFECTS)std::stoi(tokens[2]);
-                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.");
+                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.", true);
                     } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
                 }
 
                 if (r == NO_EFFECT) {
-                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str());
+                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str(), true);
                 }
 
                 for (size_t i = 0; i < effects.size(); i++) {
@@ -209,23 +231,23 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             else if (!strcmp(tokens[1].c_str(), "ra")) { // 'ra' for Remove ALL FOUND effects
                 if (tokens.size() < 3) {
-                    log(LOG_ERROR, "Not enough arguments (effect ra)");
+                    log(LOG_ERROR, "Not enough arguments (effect ra)", true);
                     continue;
                 }
                 else if (tokens.size() > 3) {
-                    log(LOG_WARNING, "Ignored extra arguments (effect ra)");
+                    log(LOG_WARNING, "Ignored extra arguments (effect ra)", true);
                 }
 
                 EFFECTS r = Effect::get_effect_by_name(tokens[2].c_str());
                 if (r == NO_EFFECT) {
                     try {
                         r = (EFFECTS)std::stoi(tokens[2]);
-                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.");
+                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.", true);
                     } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
                 }
 
                 if (r == NO_EFFECT) {
-                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str());
+                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str(), true);
                 }
 
                 for (size_t i = 0; i < effects.size(); i++) {
@@ -236,13 +258,13 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
 
             else {
-                log(LOG_ERROR, "Unknown effect command");
+                log(LOG_ERROR, "Unknown effect command", true);
             }
         }
 
         else if (!strcmp(tokens[0].c_str(), "n")) { // 'n' for Note
             if (tokens.size() < 3) {
-                log(LOG_ERROR, "Not enough arguments (n)");
+                log(LOG_ERROR, "Not enough arguments (n)", true);
                 continue;
             }
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
@@ -252,7 +274,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     try {
                         freqs.push_back(std::stod(note_tokens[i].c_str() + 1));
                     } catch (std::invalid_argument) {
-                        log(LOG_ERROR, "Invalid argument (n)");
+                        log(LOG_ERROR, "Invalid argument (n)", true);
                         continue;
                     }
 
@@ -261,7 +283,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     if (freq >= 0) {
                         freqs.push_back(freq);
                     } else {
-                        log(LOG_ERROR, "Invalid note name (n)");
+                        log(LOG_ERROR, "Invalid note name (n)", true);
                         continue;
                     }
                 }
@@ -273,7 +295,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 try {
                     durations.push_back(std::stod(duration_tokens[i].c_str()));
                 } catch (std::invalid_argument) {
-                    log(LOG_ERROR, "Invalid argument (n)");
+                    log(LOG_ERROR, "Invalid argument (n)", true);
                     continue;
                 }
             }
@@ -310,7 +332,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             if (durations.size()>1) { // 2 or more durations were given, use the second one for a pause immediately after the first one
                 if (durations.size()>2)
-                    log(LOG_WARNING, "Ignored extra durations (n)");
+                    log(LOG_WARNING, "Ignored extra durations (n)", true);
                 stereosample.l = 0;stereosample.r = 0;
                 for (int i = 0; i < durations[1]*SAMPLING_RATE/speed; i++) {
                     samples.push_back(stereosample);
@@ -321,18 +343,18 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "p")) { // 'p' for Pause
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (p)");
+                log(LOG_ERROR, "Not enough arguments (p)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (p)");
+                log(LOG_WARNING, "Ignored extra arguments (p)", true);
             }
 
             double duration;
             try {
                 duration = std::stod(tokens[1].c_str());
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (p)");
+                log(LOG_ERROR, "Invalid argument (p)", true);
                 continue;
             }
 
@@ -345,18 +367,18 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "w")) { // 'w' for Wait
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (w)");
+                log(LOG_ERROR, "Not enough arguments (w)", true);
                 continue;
             }
             else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (w)");
+                log(LOG_WARNING, "Ignored extra arguments (w)", true);
             }
 
             double timestamp;
             try {
                 timestamp = std::stod(tokens[1].c_str()) * SAMPLING_RATE / speed;
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (w)");
+                log(LOG_ERROR, "Invalid argument (w)", true);
                 continue;
             }
 
@@ -368,7 +390,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "def")) { // 'def' sets a definiton to be followed
             if (tokens.size() < 3) {
-                log(LOG_ERROR, "Not enough arguments (def)");
+                log(LOG_ERROR, "Not enough arguments (def)", true);
                 continue;
             }
             std::string value = "";
@@ -382,10 +404,10 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "sub")) { // 'sub' sets a subroutine
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (sub)");
+                log(LOG_ERROR, "Not enough arguments (sub)", true);
                 continue;
             } else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (sub)");
+                log(LOG_WARNING, "Ignored extra arguments (sub)", true);
             }
 
             subs[tokens[1]] = file.tellg();
@@ -408,27 +430,27 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "endsub")) {
             if (tokens.size() > 1) {
-                log(LOG_WARNING, "Ignored extra arguments (endsub)");
+                log(LOG_WARNING, "Ignored extra arguments (endsub)", true);
             }
 
             if (substack.size() > 0) {
                 file.seekg(substack.top());
                 substack.pop();
             } else {
-                log(LOG_ERROR, "Found orphan 'endsub'");
+                log(LOG_ERROR, "Found orphan 'endsub'", true);
             }
         }
 
         else if (!strcmp(tokens[0].c_str(), "call")) {
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (call)");
+                log(LOG_ERROR, "Not enough arguments (call)", true);
                 continue;
             } else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (call)");
+                log(LOG_WARNING, "Ignored extra arguments (call)", true);
             }
 
             if (subs.find(tokens[1]) == subs.end()) {
-                log(LOG_ERROR, ("Subroutine '" + tokens[1] + "' not found").c_str());
+                log(LOG_ERROR, ("Subroutine '" + tokens[1] + "' not found").c_str(), true);
                 continue;
             }
 
@@ -438,17 +460,17 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "rep")) { // 'rep' repeats the following code n times
             if (tokens.size() < 2) {
-                log(LOG_ERROR, "Not enough arguments (rep)");
+                log(LOG_ERROR, "Not enough arguments (rep)", true);
                 continue;
             } else if (tokens.size() > 2) {
-                log(LOG_WARNING, "Ignored extra arguments (rep)");
+                log(LOG_WARNING, "Ignored extra arguments (rep)", true);
             }
 
             int n;
             try {
                 n = atoi(tokens[1].c_str());
             } catch (std::invalid_argument) {
-                log(LOG_ERROR, "Invalid argument (rep)");
+                log(LOG_ERROR, "Invalid argument (rep)", true);
                 continue;
             }
 
@@ -458,7 +480,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         else if (!strcmp(tokens[0].c_str(), "endrep")) { // marks the end of a rep
             if (reps.empty()) {
-                log(LOG_ERROR, "Found orphan 'endrep'");
+                log(LOG_ERROR, "Found orphan 'endrep'", true);
                 continue;
             }
             reps.top()--;
@@ -479,7 +501,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }
 
         else {
-            log(LOG_WARNING, ("Unknown command: " + tokens[0]).c_str());
+            log(LOG_WARNING, ("Unknown command: " + tokens[0]).c_str(), true);
         }
     }
 

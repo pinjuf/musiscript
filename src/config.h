@@ -5,4 +5,6 @@
 #define VOICE_SUFFIX ".msc"
 #define DATA_DIR "data"
 
+#define DEF_LOG_LEVEL LOG_INFO
+
 #endif
