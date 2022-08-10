@@ -48,3 +48,12 @@ int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, d
 
     return fmax(fmin(out * amp * WavFile::def_amp, WavFile::max_amp), -WavFile::max_amp+1); // Clip audio at max volume, other effects may override this though
 }
+
+SOUNDS get_sound_by_name(const char * name) {
+    for (size_t i = 0; i < sizeof(SOUNDNAMES)/sizeof(SOUNDNAMES[0]); i++) {
+        if (strcmp(name, SOUNDNAMES[i]) == 0) {
+            return (SOUNDS)i;
+        }
+    }
+    return SILENCE;
+}

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cmath>
 #include <random>
+#include <cstring>
 
 #include "wav.h"
 
@@ -34,5 +35,7 @@ constexpr char SOUNDNAMES[10][32] = {
 };
 
 int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp = 1, double hz = SAMPLING_RATE);
+
+SOUNDS get_sound_by_name(const char * name);
 
 #endif

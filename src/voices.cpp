@@ -1,9 +1,9 @@
 #include "voices.h"
 #include "effects.h"
 #include "notes.h"
+#include "sounds.h"
 #include "wav.h"
 #include "logging.h"
-#include <stdexcept>
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -40,7 +40,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     }
 
     while(getline(file, line)) {
-        for (auto const & x : defs) {
+        for (auto const & x : defs) { // Replace all defined variables
             line = replace_all(line, x.first, x.second);
         }
 
@@ -101,13 +101,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 log(LOG_WARNING, "Ignored extra arguments (sound)");
             }
 
-            sound = SILENCE;
-            for (int i = 0; i < sizeof(SOUNDNAMES)/sizeof(SOUNDNAMES[0]); i++) {
-                if (!strcmp(tokens[1].c_str(), SOUNDNAMES[i])) {
-                    sound = (SOUNDS)i;
-                    break;
-                }
-            }
+            sound = get_sound_by_name(tokens[1].c_str());
 
             if (sound == SILENCE) {
                 try {
@@ -144,12 +138,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 Effect effect = Effect();
                 effect.start = counter;
 
-                for (int i = 0; i < sizeof(EFFECTNAMES)/sizeof(EFFECTNAMES[0]); i++) {
-                    if (!strcmp(EFFECTNAMES[i], tokens[2].c_str())) {
-                        effect.effect = (EFFECTS)i;
-                        break;
-                    }
-                }
+                effect.effect = Effect::get_effect_by_name(tokens[2].c_str());
 
                 if (effect.effect == NO_EFFECT) {
                     try {
@@ -180,6 +169,63 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
                 for (size_t i = 0; i < effects.size(); i++) {
                     effects[i].end = counter; // Keep the effect in the stack, but mark it as finished
+                }
+            }
+
+            else if (!strcmp(tokens[1].c_str(), "r")) { // 'r' for Remove FIRST FOUND effect
+                if (tokens.size() < 3) {
+                    log(LOG_ERROR, "Not enough arguments (effect r)");
+                    continue;
+                }
+                else if (tokens.size() > 3) {
+                    log(LOG_WARNING, "Ignored extra arguments (effect r)");
+                }
+
+                EFFECTS r = Effect::get_effect_by_name(tokens[2].c_str());
+                if (r == NO_EFFECT) {
+                    try {
+                        r = (EFFECTS)std::stoi(tokens[2]);
+                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.");
+                    } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
+                }
+
+                if (r == NO_EFFECT) {
+                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str());
+                }
+
+                for (size_t i = 0; i < effects.size(); i++) {
+                    if (effects[i].effect == r) {
+                        effects[i].end = counter;
+                        break;
+                    }
+                }
+            }
+
+            else if (!strcmp(tokens[1].c_str(), "ra")) { // 'ra' for Remove ALL FOUND effects
+                if (tokens.size() < 3) {
+                    log(LOG_ERROR, "Not enough arguments (effect ra)");
+                    continue;
+                }
+                else if (tokens.size() > 3) {
+                    log(LOG_WARNING, "Ignored extra arguments (effect ra)");
+                }
+
+                EFFECTS r = Effect::get_effect_by_name(tokens[2].c_str());
+                if (r == NO_EFFECT) {
+                    try {
+                        r = (EFFECTS)std::stoi(tokens[2]);
+                        log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.");
+                    } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
+                }
+
+                if (r == NO_EFFECT) {
+                    log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str());
+                }
+
+                for (size_t i = 0; i < effects.size(); i++) {
+                    if (effects[i].effect == r) {
+                        effects[i].end = counter;
+                    }
                 }
             }
 

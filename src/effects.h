@@ -4,6 +4,7 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <cstring>
 
 #include "wav.h"
 
@@ -52,6 +53,7 @@ class Effect {
         size_t get_through_i_effect(size_t i, size_t rel_sample_count, size_t abs_sample_count);
         void get_through_buffer_effect(std::vector<StereoSample> * buffer);
         size_t start = 0, end = SIZE_MAX;
+        static EFFECTS get_effect_by_name(const char * name);
 };
 
 #endif

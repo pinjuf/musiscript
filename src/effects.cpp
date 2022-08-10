@@ -149,3 +149,12 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
             break;
     }
 }
+
+EFFECTS Effect::get_effect_by_name(const char * name) {
+    for (size_t i = 0; i < sizeof(EFFECTNAMES)/sizeof(EFFECTNAMES[0]); i++) {
+        if (strcmp(name, EFFECTNAMES[i]) == 0) {
+            return (EFFECTS) i;
+        }
+    }
+    return NO_EFFECT;
+}
