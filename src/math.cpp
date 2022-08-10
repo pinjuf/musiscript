@@ -100,6 +100,10 @@ int rpc(std::string in, double * out) {
                 }
                 val_stack.push(a);
             }
+
+            else {
+                return -1;
+            }
         }
     }
 
