@@ -6,6 +6,6 @@
 void fft(double * in, double * out, int n, int sign);
 void ifft(double * in, double * out, int n, int sign);
 
-int rpc(std::string in, double * out);
+int rpn(std::string in, double * out);
 
 #endif

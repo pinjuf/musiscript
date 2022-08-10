@@ -36,7 +36,7 @@ void ifft(double * in, double * out, int n, int sign) {
     }
 }
 
-int rpc(std::string in, double * out) {
+int rpn(std::string in, double * out) {
     std::stack<double> val_stack;
     double a, b;
     std::vector<std::string> input;
