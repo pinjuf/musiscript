@@ -9,10 +9,11 @@ let b:current_syntax = "musiscript"
 syntax keyword musiscriptKeyword sub endsub
 syntax keyword musiscriptKeyword rep endrep
 syntax keyword musiscriptKeyword end
+syntax keyword musiscriptKeyword label
 highlight link musiscriptKeyword Keyword
 
 syntax keyword musiscriptFunction pan volume speed sound transpose
-syntax keyword musiscriptFunction effect call def
+syntax keyword musiscriptFunction effect call def jump
 syntax keyword musiscriptFunction n p w
 syntax keyword musiscriptFunction echo
 highlight link musiscriptFunction Function

@@ -79,6 +79,14 @@ std::string Voice::replace_rpns_with_vals(std::string line) {
     return line;
 }
 
+std::string Voice::remove_comments(std::string line) {
+    size_t start_pos = 0;
+    while((start_pos = line.find('#', start_pos)) != std::string::npos) {
+        line.erase(start_pos);
+    }
+    return line;
+}
+
 void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsamples) {
     std::ifstream file(filename);
     std::string line;
@@ -99,6 +107,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     while(getline(file, line)) {
         line_num = get_current_line(file); // Update line number for logging system
 
+        line = remove_comments(line);
         line = replace_defs_with_vals(line);
         line = replace_rpns_with_vals(line);
 
@@ -552,12 +561,44 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             log(LOG_INFO, l.c_str(), true);
         }
 
-        else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
-            break;
+        else if (!strcmp(tokens[0].c_str(), "jump")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (jump)", true);
+                continue;
+            } else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (jump)", true);
+            }
+
+            std::streampos currpos = file.tellg();
+            file.seekg(0);
+            std::string temp_line;
+            std::vector<std::string> temp_tokens;
+            bool found = false;
+            while (getline(file, temp_line)) {
+                temp_tokens = split_string(temp_line, ' ');
+                if (temp_tokens.size() < 2)
+                    continue;
+                if (!strcmp(temp_tokens[0].c_str(), "label") && !strcmp(temp_tokens[1].c_str(), tokens[1].c_str())) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                log(LOG_WARNING, "Jump target not found (jump)", true);
         }
 
-        else if (tokens[0].c_str()[0] == '#') { // comment
-            continue;
+        else if (!strcmp(tokens[0].c_str(), "label"))  {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (label)", true);
+                continue;
+            } else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (label)", true);
+            }
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing
+            break;
         }
 
         else {
