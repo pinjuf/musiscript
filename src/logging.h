@@ -25,11 +25,11 @@ constexpr const char ** LOGPREFIXES = (const char *[]) {
 
 constexpr const char ** LOGCOLORS = (const char *[]) {
 #if DO_COLOR_LOG
-    (char *)"\x1b[36m",
-    (char *)"\x1b[32m",
-    (char *)"\x1b[33m",
-    (char *)"\x1b[31m",
-    (char *)"\x1b[35m",
+    (char *)"\x1b[36m", // Blue
+    (char *)"\x1b[32m", // Green
+    (char *)"\x1b[33m", // Yellow
+    (char *)"\x1b[31m", // Red
+    (char *)"\x1b[35m", // Magenta
 #else
     (char *)"",
     (char *)"",
