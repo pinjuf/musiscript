@@ -433,6 +433,22 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             defs["$"+tokens[1]] = value;
         }
 
+        else if (!strcmp(tokens[0].c_str(), "undef")) { // 'undef' deletes a variable
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (undef)", true);
+                continue;
+            } else if (tokens.size() > 2) {
+                log(LOG_WARNING, "Ignored extra arguments (undef)", true);
+            }
+
+            if (defs.find("$"+tokens[1]) == defs.end()) {
+                log(LOG_ERROR, "Undefined variable (undef)", true);
+                continue;
+            }
+
+            defs.erase("$"+tokens[1]);
+        }
+
         else if (!strcmp(tokens[0].c_str(), "sub")) { // 'sub' sets a subroutine
             if (tokens.size() < 2) {
                 log(LOG_ERROR, "Not enough arguments (sub)", true);
