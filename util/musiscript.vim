@@ -23,3 +23,6 @@ highlight link musiscriptComment Comment
 syntax match musiscriptPitch /[a-h,A-H]\d\+[+,-,#,b]\=/
 syntax match musiscriptPitch /r\d\+\.\=\d\+/
 highlight link musiscriptPitch Constant
+
+syntax match musiscriptRPN /\[.*\]/
+highligh link musiscriptRPN Operator

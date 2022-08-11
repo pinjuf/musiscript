@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstdint>
 #include <iostream>
+#include <iomanip>
 
 #include "voices.h"
 #include "effects.h"
@@ -71,7 +72,7 @@ std::string Voice::replace_rpns_with_vals(std::string line) {
             return line;
         }
         std::stringstream ss;
-        ss << rpn_result;
+        ss << std::setprecision(32) << rpn_result;
         line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), ss.str());
     }
 
