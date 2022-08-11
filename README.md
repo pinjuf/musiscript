@@ -33,13 +33,14 @@ the duration can either be 1 value or 2 (separated by a `,`), where the first di
 - `effect <effect command>`: see below
 - `w <timestamp>`: waits until a certain (absolute) timestamp is reached, can be used to sync voices
 - `def <varname> <value>`: defines a variable and initializes it with a value, see below
+- `undef <varname>`: deletes a variable
 - `sub <subname>`: defines a subroutine, all commands following it are part of it until an `endsub` is reached, nested subs are possible
 - `endsub`: ends a subroutine definition, see above
 - `call <subname>`: calls a subroutine
 - `rep <n>`: repeats the following block n times
 - `endrep`: ends a `rep` block
 - `echo <text>`: Log a text, useful for debugging
-- `#<comment>`: a comment, ignored by parsing
+- `#<comment>`: a comment, ignored by parsing (must be at the beginning of the line)
 
 ### Pitches
 
@@ -98,3 +99,20 @@ Effects are pieces of code that can change the frequency, amplitude, etc. of a s
  - `ra <effect name/index>`: Remove all effects with a specific name or index
  - `c`: Clear the effect stacl
 Effects are applied in the same order that they were added.
+Example:
+
+```
+# Smooth the rather harsh SAW sound a bit
+sound SAW
+
+# Normal sound
+n a4 1,1
+
+# Add SMOOTH effect over 3 samples
+effect a SMOOTH 3
+n a4 1,1
+
+# Add another SMOOTH effect over 3 samples
+effect a SMOOTH 3
+n a4 1,1
+```
