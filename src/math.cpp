@@ -115,3 +115,51 @@ int rpn(std::string in, double * out) {
 
     return 0;
 }
+
+int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with boolean operators
+    std::stack<bool> val_stack;
+    bool a, b;
+    std::vector<std::string> input;
+    std::stringstream ss(in);
+    std::string tok;
+    while(getline(ss, tok, ' ')) {
+        if (!tok.empty())
+            input.push_back(tok);
+    }
+
+    for (std::string comm : input) {
+        if (!strcmp(comm.c_str(), "true"))
+            val_stack.push(true);
+        else if (!strcmp(comm.c_str(), "false"))
+            val_stack.push(false);
+        else if (!strcmp(comm.c_str(), "!")) {
+            if (val_stack.size() < 1) {return -1;}
+            bool a = val_stack.top();val_stack.pop();
+            a =! a;
+            val_stack.push(a);
+        }
+        else if (!strcmp(comm.c_str(), "&&")) {
+            if (val_stack.size() < 2) {return -1;}
+            a = val_stack.top();val_stack.pop();
+            b = val_stack.top();val_stack.pop();
+            val_stack.push(a && b);
+        }
+        else if (!strcmp(comm.c_str(), "||")) {
+            if (val_stack.size() < 2) {return -1;}
+            a = val_stack.top();val_stack.pop();
+            b = val_stack.top();val_stack.pop();
+            val_stack.push(a || b);
+        }
+        else {
+            return -1;
+        }
+    }
+
+    if (val_stack.empty()) {
+        return -1;
+    }
+
+    *out = val_stack.top();
+
+    return 0;
+}
