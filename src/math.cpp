@@ -75,6 +75,12 @@ int rpn(std::string in, double * out) {
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(b/a);
             }
+            else if (!strcmp(comm.c_str(), "%")) {
+                if (val_stack.size() < 2) {return -1;}
+                a = val_stack.top();val_stack.pop();
+                b = val_stack.top();val_stack.pop();
+                val_stack.push(fmod(b,a));
+            }
 
             else if (!strcmp(comm.c_str(), "^")) {
                 if (val_stack.size() < 1) {return -1;}

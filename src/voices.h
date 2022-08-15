@@ -35,7 +35,8 @@ class Voice {
         std::stack<int> reps;
 
         std::string replace_defs_with_vals(std::string line);
-        std::string replace_rpns_with_vals(std::string line);
+        std::string replace_rpns_with_vals(std::string line);;
+        std::string replace_codepts_with_vals(std::string line);;
         std::string remove_comments(std::string line);
 };
 

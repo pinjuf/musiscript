@@ -26,4 +26,6 @@ syntax match musiscriptPitch /r\d\+\.\=\d\+/
 highlight link musiscriptPitch Constant
 
 syntax match musiscriptRPN /\[.*\]/
-highligh link musiscriptRPN Operator
+syntax match musiscriptCopePT /{.*}/
+highlight link musiscriptRPN Operator
+highlight link musiscriptCopePT Statement

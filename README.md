@@ -69,6 +69,8 @@ def halftonestep [2 1 12 / ^]
 echo $halftonestep
 ```
 
+For now, RPN may only consist of numbers, operators and variables, but no codepointers!
+
 ### Variables
 
 Variables can be declared as seen above. Internally speaking, they all are strings (incl. spaces etc.)! But as they are essentially replaced by the line preprocessor, they can still be used as numbers and other types. They can also be redefined, allowing for some funny sounds:
@@ -118,3 +120,14 @@ n a4 1,1
 effect a SMOOTH 3
 n a4 1,1
 ```
+
+### Codepointers
+
+Codepointers are statements that let you call pieces of code (as defined in src/codepts.cpp) and use their return values.
+Example:
+
+```
+echo {numeq $counter $thres}
+```
+
+This will echo `true` if `$counter == $thres`, else it will output `false`.

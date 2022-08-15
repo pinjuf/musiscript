@@ -13,6 +13,7 @@
 #include "wav.h"
 #include "logging.h"
 #include "math.h"
+#include "codepts.h"
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -79,6 +80,26 @@ std::string Voice::replace_rpns_with_vals(std::string line) {
     return line;
 }
 
+std::string Voice::replace_codepts_with_vals(std::string line) {
+    size_t start_pos = 0;
+    while((start_pos = line.find('{', start_pos)) != std::string::npos) {
+        size_t end_pos = line.find('}', start_pos);
+        if (end_pos == std::string::npos) {
+            break;
+        }
+        std::string codept_name = line.substr(start_pos + 1, end_pos - start_pos - 1);
+        std::string * codept_result =  new std::string();
+        if (eval_codepointer(codept_name, codept_result) < 0) {
+            log(LOG_ERROR, "Invalid code pointer", true);
+            return line;
+        }
+        line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), *codept_result);
+        delete codept_result;
+    }
+
+    return line;
+}
+
 std::string Voice::remove_comments(std::string line) {
     size_t start_pos = 0;
     while((start_pos = line.find('#', start_pos)) != std::string::npos) {
@@ -108,8 +129,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         line_num = get_current_line(file); // Update line number for logging system
 
         line = remove_comments(line);
+
         line = replace_defs_with_vals(line);
-        line = replace_rpns_with_vals(line);
+
+        line = replace_rpns_with_vals(line); // TODO: Allow nested rpns and codepointers
+        line = replace_codepts_with_vals(line);
 
         tokens = split_string(line, ' ');
 
