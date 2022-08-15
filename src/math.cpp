@@ -128,9 +128,9 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
     }
 
     for (std::string comm : input) {
-        if (!strcmp(comm.c_str(), "true"))
+        if (!strcmp(comm.c_str(), "true") || !strcmp(comm.c_str(), "1"))
             val_stack.push(true);
-        else if (!strcmp(comm.c_str(), "false"))
+        else if (!strcmp(comm.c_str(), "false") || !strcmp(comm.c_str(), "0"))
             val_stack.push(false);
         else if (!strcmp(comm.c_str(), "!")) {
             if (val_stack.size() < 1) {return -1;}
