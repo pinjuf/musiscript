@@ -114,30 +114,20 @@ int rpn(std::string in, double * out) {
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(b/a);
             }
-            else if (!strcmp(comm.c_str(), "%")) {
+            else if (!strcmp(comm.c_str(), "mod")) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(fmod(b,a));
             }
 
-            else if (!strcmp(comm.c_str(), "++")) {
-                if (val_stack.size() < 1) {return -1;}
-                a = val_stack.top();val_stack.pop();
-                val_stack.push(a+1);
-            }
-            else if (!strcmp(comm.c_str(), "--")) {
-                if (val_stack.size() < 1) {return -1;}
-                a = val_stack.top();val_stack.pop();
-                val_stack.push(a-1);
-            }
-            else if (!strcmp(comm.c_str(), "^")) {
+            else if (!strcmp(comm.c_str(), "pow")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(pow(b, a));
             }   
-            else if (!strcmp(comm.c_str(), "v")) {
+            else if (!strcmp(comm.c_str(), "sqrt")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 val_stack.push(sqrt(a));
@@ -249,6 +239,9 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
         }
 
         if (curr == ")") { // Scenario 3: Close Parenthesis
+            if (op_stack.empty()) {
+                return -1;
+            }
             while (op_stack.top() != "(") {
                 out.push_back(op_stack.top());
                 op_stack.pop();
