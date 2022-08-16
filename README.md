@@ -42,7 +42,7 @@ the duration can either be 1 value or 2 (separated by a `,`), where the first di
 - `echo <text>`: Log a text, useful for debugging
 - `jump <label>`: immediatly jump the the specified `label`
 - `label <title>`: sets a label, see above
-- `#<comment>`: a comment, ignored by parsing (must be at the beginning of the line)
+- `#<comment>`: a comment, ignored by parsing
 
 ### Pitches
 
