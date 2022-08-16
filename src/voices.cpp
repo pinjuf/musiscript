@@ -52,6 +52,12 @@ size_t get_current_line(std::ifstream& file) {
     return line_count;
 }
 
+std::string strip_line(std::string str) {
+    str.erase(0, str.find_first_not_of(" \n\r\t"));
+    str.erase(str.find_last_not_of(" \n\r\t") + 1);
+    return str;
+}
+
 std::string Voice::replace_defs_with_vals(std::string line) {
     for (auto const & x : defs) { // Replace all defined variables
         line = replace_all(line, x.first, x.second);
@@ -126,8 +132,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     set_line_num_ptr(&line_num); // Connect to logging system
 
     while(getline(file, line)) {
-        line_num = get_current_line(file); // Update line number for logging system
+        line_num = get_current_line(file); // Update line number for logging system, rather inefficient but simple
 
+        line = strip_line(line);
         line = remove_comments(line);
 
         line = replace_defs_with_vals(line);
@@ -578,9 +585,6 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 continue;
             }
             std::string l = "(echo) ";
-            size_t start = line.find_first_not_of(" \n\r\t\f\v");
-            if (start != std::string::npos)
-                line = line.substr(start);
             l += line.c_str()+sizeof("echo");
             log(LOG_INFO, l.c_str(), true);
         }
@@ -612,13 +616,167 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 log(LOG_WARNING, "Jump target not found (jump)", true);
         }
 
-        else if (!strcmp(tokens[0].c_str(), "label"))  {
+        else if (!strcmp(tokens[0].c_str(), "label")) {
             if (tokens.size() < 2) {
                 log(LOG_ERROR, "Not enough arguments (label)", true);
                 continue;
             } else if (tokens.size() > 2) {
                 log(LOG_WARNING, "Ignored extra arguments (label)", true);
             }
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "if")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (if)", true);
+                continue;
+            }
+
+            bool condition = false; // wrong by default
+
+            if (lrpn(line.c_str()+sizeof("if"), &condition) < 0) {
+                log(LOG_ERROR, "Invalid condition (if)", true);
+                continue;
+            }
+            ifs.push(condition);
+
+            if (condition == true)
+                continue;
+
+            int depth_counter = 0;
+            std::streampos prev = file.tellg();
+            std::string temp_line;
+            while (getline(file, temp_line)) {
+                std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
+                if (temp_tokens.empty()) {
+                    prev = file.tellg();
+                    continue;
+                }
+
+                if (depth_counter == 0 &&
+                        (!strcmp(temp_tokens[0].c_str(), "else") ||
+                         !strcmp(temp_tokens[0].c_str(), "elif") ||
+                         !strcmp(temp_tokens[0].c_str(), "endif"))) {
+                    file.seekg(prev);
+                    break;
+                }
+
+                if (!strcmp(temp_tokens[0].c_str(), "if"))
+                    depth_counter++;
+                else if (!strcmp(temp_tokens[0].c_str(), "endif"))
+                    depth_counter--;
+
+                prev = file.tellg();
+            }
+
+            file.seekg(prev); // Let next mainloop iteration handle the endif/elif/else
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "elif")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "Not enough arguments (elif)", true);
+                continue;
+            }
+
+            if (ifs.empty()) {
+                log(LOG_ERROR, "Found orphan 'elif'", true);
+                continue;
+            }
+
+            if (!ifs.top()) { // Last 'if' was not run
+                bool condition = false; // wrong by default
+                if (lrpn(line.c_str()+sizeof("elif"), &condition) < 0) {
+                    log(LOG_ERROR, "Invalid condition (elif)", true);
+                    continue;
+                }
+
+                if (condition) {
+                    ifs.pop();
+                    ifs.push(true); // for later 'elif's/'else's
+                    continue;
+                }
+            }
+
+            // If we are here, either the last 'if' was run, or the elif was not run
+
+            int depth_counter = 0;
+            std::streampos prev = file.tellg();
+            std::string temp_line;
+            while (getline(file, temp_line)) {
+                std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
+                if (temp_tokens.empty()) {
+                    prev = file.tellg();
+                    continue;
+                }
+
+                if (depth_counter == 0 &&
+                        (!strcmp(temp_tokens[0].c_str(), "else") ||
+                         !strcmp(temp_tokens[0].c_str(), "elif") ||
+                         !strcmp(temp_tokens[0].c_str(), "endif"))) {
+                    file.seekg(prev);
+                    break;
+                }
+
+                if (!strcmp(temp_tokens[0].c_str(), "if"))
+                    depth_counter++;
+                else if (!strcmp(temp_tokens[0].c_str(), "endif"))
+                    depth_counter--;
+
+                prev = file.tellg();
+            }
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "else")) {
+            if (tokens.size() > 1) {
+                log(LOG_WARNING, "Ignored extra arguments (else)", true);
+            }
+
+            if (ifs.empty()) {
+                log(LOG_ERROR, "Found orphan 'else'", true);
+                continue;
+            }
+
+            if (!ifs.top()) { // Last 'if' was not run, continue parsing as usual
+                continue;
+            }
+
+            int depth_counter = 0;
+            std::streampos prev = file.tellg();
+            std::string temp_line;
+            while (getline(file, temp_line)) {
+                std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
+                if (temp_tokens.empty()) {
+                    prev = file.tellg();
+                    continue;
+                }
+
+                if (depth_counter == 0 &&
+                        (!strcmp(temp_tokens[0].c_str(), "endif"))) { // 'else' is always last in an 'if' block, so only look for endif
+                    file.seekg(prev);
+                    break;
+                }
+
+                if (!strcmp(temp_tokens[0].c_str(), "if"))
+                    depth_counter++;
+                else if (!strcmp(temp_tokens[0].c_str(), "endif"))
+                    depth_counter--;
+
+                prev = file.tellg();
+            }
+
+            file.seekg(prev);
+        }
+
+        else if (!strcmp(tokens[0].c_str(), "endif")) {
+            if (tokens.size() > 1) {
+                log(LOG_WARNING, "Ignored extra arguments (endif)", true);
+            }
+
+            if (ifs.empty()) {
+                log(LOG_ERROR, "Found orphan 'endif'", true);
+                continue;
+            }
+
+            ifs.pop();
         }
 
         else if (!strcmp(tokens[0].c_str(), "end")) { // 'end' ends parsing

@@ -33,6 +33,7 @@ class Voice {
 
         std::stack<std::streampos> repstack;
         std::stack<int> reps;
+        std::stack<bool> ifs;
 
         std::string replace_defs_with_vals(std::string line);
         std::string replace_rpns_with_vals(std::string line);;

@@ -25,10 +25,14 @@ play: run
 vim_install: util/musiscript.vim
 	mkdir -p ~/.vim/syntax
 	cp util/musiscript.vim ~/.vim/syntax/musiscript.vim
+vim_uninstall: util/musiscript.vim
+	rm -f ~/.vim/syntax/musiscript.vim
 
 nvim_install: util/musiscript.vim
 	mkdir -p ~/.config/nvim/syntax
 	cp util/musiscript.vim ~/.config/nvim/syntax/musiscript.vim
+nvim_uninstall: util/musiscript.vim
+	rm -f ~/.config/nvim/syntax/musiscript.vim
 
 install: $(TARGET)
 	cp $(TARGET) /usr/bin/

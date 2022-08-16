@@ -8,6 +8,7 @@ let b:current_syntax = "musiscript"
 
 syntax keyword musiscriptKeyword sub endsub
 syntax keyword musiscriptKeyword rep endrep
+syntax keyword musiscriptKeyword if elif else
 syntax keyword musiscriptKeyword end
 syntax keyword musiscriptKeyword label
 highlight link musiscriptKeyword Keyword

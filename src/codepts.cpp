@@ -54,6 +54,24 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "false";
     }
 
+    if (!strcmp(tokens[0].c_str(), "numlt")) {
+        double a, b;
+        if (tokens.size() != 3)
+            return -1;
+
+        try {
+            a = std::stod(tokens[1]);
+            b = std::stod(tokens[2]);
+        } catch (std::invalid_argument) {
+            return -1;
+        }
+
+        if (a<b)
+            *output = "true";
+        else
+            *output = "false";
+    }
+
     if (!strcmp(tokens[0].c_str(), "numgeqt")) {
         double a, b;
         if (tokens.size() != 3)
