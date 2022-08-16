@@ -62,7 +62,8 @@ Alternatively, you may pass a frequency as a floating point number with an `r` p
 ### Infix notation
 
 Musiscript is capable of reading infix notation. To enter infix notation mode, put an expression in square braces.
-Valid operators are `+-*/`. Other functions are defined in the reverse polish notation parser.
+Valid operators are `^+-*/`. Other functions are defined in the reverse polish notation parser.
+> For the interested: To eval an infix statement, it is first converted to RPN, and then passed to an RPN parser.
 
 ### Variables
 
@@ -116,7 +117,7 @@ n a4 1,1
 
 ### Codepointers
 
-Codepointers are statements that let you call pieces of code (as defined in src/codepts.cpp) and use their return values. They can be very useful for checking conditions.
+Codepointers are statements that let you call pieces of code (as defined in `src/codepts.cpp`) and use their return values. They can be very useful for checking conditions.
 Example:
 
 ```
