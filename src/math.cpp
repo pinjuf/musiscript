@@ -103,9 +103,16 @@ int rpn(std::string in, double * out) {
                 val_stack.push(a*b);
             }   
             else if (!strcmp(comm.c_str(), "-")) {
-                if (val_stack.size() < 2) {return -1;}
-                a = val_stack.top();val_stack.pop();
-                b = val_stack.top();val_stack.pop();
+                if (val_stack.size() > 1) {
+                    a = val_stack.top();val_stack.pop();
+                    b = val_stack.top();val_stack.pop();
+                    val_stack.push(b-a);
+                } else if (val_stack.size() == 1) {
+                    a = val_stack.top();val_stack.pop();
+                    val_stack.push(-a);
+                } else {
+                    return -1;
+                }
                 val_stack.push(b-a);
             }   
             else if (!strcmp(comm.c_str(), "/")) {
@@ -222,7 +229,7 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
     // Shunting yard algorithm
     // Input: tokens in infix notation
     // Output: tokens in postfix notation
-    // Source: https://en.wikipedia.org/wiki/Shunting-yard_algorithm
+    // Source: https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 
     std::stack<std::string> op_stack;
 
@@ -297,6 +304,23 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
             return -1;
         }
         op_stack.pop();
+    }
+
+    return 0;
+}
+
+int eval_infix(std::string in, double * out) {
+    // First, convert input to postfix notation, then pass to RPN
+    std::vector<std::string> tokens = split_infix(in);
+    std::vector<std::string> postfix;
+    if (shunting_yard(tokens, postfix) == -1) {
+        return -1;
+    }
+    std::string tmp;
+    for (std::string curr : postfix)
+        tmp += curr + " ";
+    if (rpn(tmp, out) == -1) {
+        return -1;
     }
 
     return 0;

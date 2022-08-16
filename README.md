@@ -59,17 +59,10 @@ For accidentals, a `+` or a `#` represents a sharp tone, a `-` or a `b` a flat o
 
 Alternatively, you may pass a frequency as a floating point number with an `r` prefix, for example: `r440'
 
-### RPN
+### Infix notation
 
-Musiscript uses the Reverse Polish Notation (RPN) as its main way of interpreting user inputs. You can enter RPN mode by using square brackets. Anything inbetween said brackets will be interpreted as RPN. Nested RPNs are not allowed, nor are they necessary. Here's an example:
-
-```
-# Define the ration between two adjacent notes
-def halftonestep [2 1 12 / ^]
-echo $halftonestep
-```
-
-For now, RPN may only consist of numbers, operators and variables, but no codepointers!
+Musiscript is capable of reading infix notation. To enter infix notation mode, put an expression in square braces.
+Valid operators are `+-*/`. Other functions are defined in the reverse polish notation parser.
 
 ### Variables
 

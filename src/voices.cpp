@@ -65,21 +65,21 @@ std::string Voice::replace_defs_with_vals(std::string line) {
     return line;
 }
 
-std::string Voice::replace_rpns_with_vals(std::string line) {
+std::string Voice::replace_infix_with_vals(std::string line) {
     size_t start_pos = 0;
-    double rpn_result;
+    double infix_result;
     while((start_pos = line.find('[', start_pos)) != std::string::npos) {
         size_t end_pos = line.find(']', start_pos);
         if (end_pos == std::string::npos) {
             break;
         }
-        std::string rpn_name = line.substr(start_pos + 1, end_pos - start_pos - 1);
-        if (rpn(rpn_name, &rpn_result) < 0) {
-            log(LOG_ERROR, "Invalid reverse polish notation", true);
+        std::string infix = line.substr(start_pos + 1, end_pos - start_pos - 1);
+        if (eval_infix(infix, &infix_result) < 0) {
+            log(LOG_ERROR, "Invalid infix notation", true);
             return line;
         }
         std::stringstream ss;
-        ss << std::setprecision(32) << rpn_result;
+        ss << std::setprecision(32) << infix_result;
         line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), ss.str());
     }
 
@@ -139,7 +139,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         line = replace_defs_with_vals(line);
 
-        line = replace_rpns_with_vals(line); // TODO: Allow nested rpns and codepointers
+        line = replace_infix_with_vals(line); // TODO: Allow nested infixs and codepointers
         line = replace_codepts_with_vals(line);
 
         tokens = split_string(line, ' ');

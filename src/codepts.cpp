@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <vector>
 #include <sstream>
+#include <math.h>
 
 int eval_codepointer(std::string input, std::string * output) {
 
@@ -110,6 +111,10 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "true";
         else
             *output = "false";
+    }
+
+    if (!strcmp(tokens[0].c_str(), "pi")) {
+        *output = "3.141592653589793";
     }
 
     return 0;
