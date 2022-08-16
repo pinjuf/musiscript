@@ -2,6 +2,7 @@
 #define LOGGING_H
 
 #include <cstdint>
+#include <string>
 
 #include "config.h"
 
@@ -42,6 +43,7 @@ constexpr const char ** LOGCOLORS = (const char *[]) {
 LOGLEVEL getloglevel();
 void setloglevel(LOGLEVEL level);
 void log(LOGLEVEL level, const char * msg, bool incl_line_num = false);
+void log(LOGLEVEL level, std::string msg, bool incl_line_num = false);
 void set_line_num_ptr(std::size_t * line_num_ptr);
 
 #endif

@@ -23,6 +23,10 @@ void log(LOGLEVEL level, const char * msg, bool incl_line_num) {
     }
 }
 
+void log(LOGLEVEL level, std::string msg, bool incl_line_num) {
+    log(level, msg.c_str(), incl_line_num);
+}
+
 void set_line_num_ptr(size_t * line_num_ptr) {
     line_num = line_num_ptr;
 }
