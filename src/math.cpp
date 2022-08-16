@@ -113,7 +113,6 @@ int rpn(std::string in, double * out) {
                 } else {
                     return -1;
                 }
-                val_stack.push(b-a);
             }   
             else if (!strcmp(comm.c_str(), "/")) {
                 if (val_stack.size() < 2) {return -1;}
