@@ -36,6 +36,45 @@ void ifft(double * in, double * out, int n, int sign) {
     }
 }
 
+std::vector<std::string> split_infix(std::string in) {
+    std::vector<std::string> out;
+    std::string tmp;
+
+    for (int i = 0; i < in.size(); i++) {
+        if (in[i] == ' ') {
+            if (tmp.size() > 0) {
+                out.push_back(tmp);
+                tmp = "";
+            }
+            continue;
+        }
+
+        bool is_single_special_char = false;
+        for (int j = 0; j < strlen(OPERATORS"(),"); j++) {
+            if (in[i] == (OPERATORS"(),")[j]) {
+                is_single_special_char = true;
+                break;
+            }
+        }
+
+        if (is_single_special_char) {
+            if (tmp.size() > 0) {
+                out.push_back(tmp);
+                tmp = "";
+            }
+            out.push_back(std::string(1, in[i]));
+        } else {
+            tmp += in[i];
+        }
+    }
+
+    if (tmp.size() > 0) {
+        out.push_back(tmp);
+    }
+
+    return out;
+}
+
 int rpn(std::string in, double * out) {
     std::stack<double> val_stack;
     double a, b;
@@ -176,6 +215,96 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
     }
 
     *out = val_stack.top();
+
+    return 0;
+}
+
+int get_op_priority(char op) {
+    if (op == '+' || op == '-')
+        return 1;
+    else if (op == '*' || op == '/')
+        return 2;
+
+    return -1;
+}
+
+int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
+    // Shunting yard algorithm
+    // Input: tokens in infix notation
+    // Output: tokens in postfix notation
+    // Source: https://en.wikipedia.org/wiki/Shunting-yard_algorithm
+
+    std::stack<std::string> op_stack;
+
+    for (std::string curr : in) {
+        try { // Scenario 1: Number
+            stod(curr, NULL);
+            out.push_back(curr);
+            continue;
+        } catch (std::invalid_argument) {}
+
+        if (curr == "(") { // Scenario 2: Open Parenthesis
+            op_stack.push(curr);
+            continue;
+        }
+
+        if (curr == ")") { // Scenario 3: Close Parenthesis
+            while (op_stack.top() != "(") {
+                out.push_back(op_stack.top());
+                op_stack.pop();
+            }
+            op_stack.pop(); // Discard top parenthesis
+
+            // Check if top == function
+            if (!op_stack.empty() && get_op_priority(op_stack.top()[0]) == -1 && op_stack.top() != "(") {
+                out.push_back(op_stack.top());
+                op_stack.pop();
+            }
+
+            continue;
+        }
+
+        bool is_operator = false;
+        for (char ch : OPERATORS) {
+            if (curr[0] == ch) {
+                is_operator = true;
+                break;
+            }
+        }
+        if (is_operator) { // Scenario 4: Operator
+            while (!op_stack.empty()) {
+                std::string curr_top = op_stack.top();
+                if (curr_top == "(") {
+                    break;
+                }
+
+                if (get_op_priority(curr[0]) > get_op_priority(curr_top[0])) { // All our operators are left associative
+                    break;
+                }
+
+                op_stack.pop();
+                out.push_back(curr_top);
+            }
+            op_stack.push(curr);
+
+            continue;
+        }
+
+        if (curr == ",") { // Ignore comma
+            continue;
+        }
+
+        // Scenario 5: Function
+        op_stack.push(curr);
+    }
+
+    while (!op_stack.empty()) {
+        out.push_back(op_stack.top());
+        if (op_stack.top() == "(") { // Mismatched parenthesis
+            return -1;
+        }
+        op_stack.pop();
+    }
 
     return 0;
 }
