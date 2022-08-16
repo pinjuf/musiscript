@@ -116,7 +116,7 @@ n a4 1,1
 
 ### Codepointers
 
-Codepointers are statements that let you call pieces of code (as defined in src/codepts.cpp) and use their return values.
+Codepointers are statements that let you call pieces of code (as defined in src/codepts.cpp) and use their return values. They can be very useful for checking conditions.
 Example:
 
 ```
