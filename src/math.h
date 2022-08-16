@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-#define OPERATORS "^*/+-" // Order matters! (shows priority)
+#define OPERATORS "^*/+-"
 
 #include <vector>
 #include <string>

@@ -128,7 +128,7 @@ int rpn(std::string in, double * out) {
                 val_stack.push(fmod(b,a));
             }
 
-            else if (!strcmp(comm.c_str(), "pow")) {
+            else if (!strcmp(comm.c_str(), "pow") || !strcmp(comm.c_str(), "^")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
@@ -221,8 +221,20 @@ int get_op_priority(char op) {
         return 1;
     else if (op == '*' || op == '/')
         return 2;
+    else if (op == '^')
+        return 3;
 
     return -1;
+}
+
+bool is_left_associated(char op) {
+    if (op == '^')
+        return false;
+    else if (op == '+' || op == '-')
+        return true;
+    else if (op == '*' || op == '/')
+        return true;
+    return false;
 }
 
 int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
@@ -278,7 +290,10 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
                     break;
                 }
 
-                if (get_op_priority(curr[0]) > get_op_priority(curr_top[0])) { // All our operators are left associative
+                if (!( // Forgive me, oh future debugger
+                    (get_op_priority(curr_top[0])>get_op_priority(curr[0])) ||
+                    (get_op_priority(curr_top[0])==get_op_priority(curr[0]) && is_left_associated(curr_top[0]))
+                    )) {
                     break;
                 }
 
