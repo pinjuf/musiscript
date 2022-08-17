@@ -47,7 +47,7 @@ int get_op_priority(std::string op) {
     return -1;
 }
 
-std::vector<std::string> split_infix(std::string in) { // This needs to be rewritten.
+std::vector<std::string> split_infix(std::string in) { // Tokenizer, this needs to be rewritten.
     std::vector<std::string> out;
     std::string tmp;
 
@@ -75,6 +75,37 @@ std::vector<std::string> split_infix(std::string in) { // This needs to be rewri
                     continue;
                 }
             }
+            if (tmp.size() > 0) {
+                out.push_back(tmp);
+                tmp = "";
+            }
+            out.push_back(std::string(1, in[i]));
+        } else { // Any other char
+            tmp += in[i];
+        }
+    }
+
+    if (tmp.size() > 0) {
+        out.push_back(tmp);
+    }
+
+    return out;
+}
+
+std::vector<std::string> split_infix_logical(std::string in) { // Tokenizer for logical expressions
+    std::vector<std::string> out;
+    std::string tmp;
+
+    for (int i = 0; i < in.size(); i++) {
+        if (in[i] == ' ') {         // Space is a clear separator
+            if (tmp.size() > 0) {
+                out.push_back(tmp);
+                tmp = "";
+            }
+            continue;
+        }
+
+        if (in[i] == '(' || in[i] == ')') { // Parentheses are clear separators
             if (tmp.size() > 0) {
                 out.push_back(tmp);
                 tmp = "";
@@ -353,6 +384,64 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
     return 0;
 }
 
+int shunting_yard_logical(std::vector<std::string> in, std::vector<std::string> &out) {
+    std::stack<std::string> op_stack;
+
+    for (std::string curr : in) {
+        if (curr == "true" || curr == "false" || curr == "0" || curr == "1") { // Scenario 1: Number
+            out.push_back(curr);
+        }
+
+        else if (curr == "(") { // Scenario 2: Open Parenthesis
+            op_stack.push(curr);
+        }
+
+        else if (curr == ")") { // Scenario 3: Close Parenthesis
+            if (op_stack.empty()) {
+                return -1;
+            }
+
+            while (op_stack.top() != "(") {
+                out.push_back(op_stack.top());
+                op_stack.pop();
+            }
+            op_stack.pop(); // Discard top parenthesis
+
+            if (!op_stack.empty() && op_stack.top()=="not") {
+                out.push_back(op_stack.top());
+                op_stack.pop();
+            }
+        }
+
+        else if (curr == "not") { // Scenario 4: Not (only function)
+            op_stack.push(curr);
+        }
+
+        else { // Scenario 5: Operator
+            while (!op_stack.empty()) {
+                std::string curr_top = op_stack.top();
+                if (curr_top == "(") {
+                    break;
+                }
+
+                op_stack.pop();
+                out.push_back(curr_top);
+            }
+            op_stack.push(curr);
+        }
+    }
+
+    while (!op_stack.empty()) {
+        out.push_back(op_stack.top());
+        if (op_stack.top() == "(") { // Mismatched parenthesis
+            return -1;
+        }
+        op_stack.pop();
+    }
+
+    return 0;
+}
+
 int eval_infix(std::string in, double * out) {
     // First, convert input to postfix notation, then pass to RPN
     std::vector<std::string> tokens = split_infix(in);
@@ -364,6 +453,22 @@ int eval_infix(std::string in, double * out) {
     for (std::string curr : postfix)
         tmp += curr + " ";
     if (rpn(tmp, out) == -1) {
+        return -1;
+    }
+
+    return 0;
+}
+
+int eval_infix_logical(std::string in, bool * out) {
+    std::vector<std::string> tokens = split_infix_logical(in);
+    std::vector<std::string> postfix;
+    if (shunting_yard_logical(tokens, postfix) == -1) {
+        return -1;
+    }
+    std::string tmp;
+    for (std::string curr : postfix)
+        tmp += curr + " ";
+    if (lrpn(tmp, out) == -1) {
         return -1;
     }
 

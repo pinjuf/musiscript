@@ -633,7 +633,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             bool condition = false; // wrong by default
 
-            if (lrpn(line.c_str()+sizeof("if"), &condition) < 0) {
+            if (eval_infix_logical(line.c_str()+sizeof("if"), &condition) < 0) {
                 log(LOG_ERROR, "Invalid condition (if)", true);
                 continue;
             }
@@ -684,7 +684,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             if (!ifs.top()) { // Last 'if' was not run
                 bool condition = false; // wrong by default
-                if (lrpn(line.c_str()+sizeof("elif"), &condition) < 0) {
+                if (eval_infix_logical(line.c_str()+sizeof("elif"), &condition) < 0) { // Note: sizeof("elif") includes the space (that's actually the null terminator)
                     log(LOG_ERROR, "Invalid condition (elif)", true);
                     continue;
                 }

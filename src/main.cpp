@@ -11,7 +11,11 @@ int main() {
     WavFile wavfile;
     Voice * voice;
 
+#if CONSTANT_SRAND
+    srand(0);
+#else
     srand(time(0));
+#endif
 
     for (auto& file : std::filesystem::directory_iterator(DATA_DIR)) {
         if (file.path().extension() == VOICE_SUFFIX) {

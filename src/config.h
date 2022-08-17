@@ -8,5 +8,6 @@
 #define DEF_LOG_LEVEL LOG_INFO
 
 #define DO_COLOR_LOG true
+#define CONSTANT_SRAND false
 
 #endif
