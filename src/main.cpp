@@ -1,4 +1,6 @@
 #include <filesystem>
+#include <random>
+#include <time.h>
 
 #include "wav.h"
 #include "voices.h"
@@ -8,6 +10,8 @@
 int main() {
     WavFile wavfile;
     Voice * voice;
+
+    srand(time(0));
 
     for (auto& file : std::filesystem::directory_iterator(DATA_DIR)) {
         if (file.path().extension() == VOICE_SUFFIX) {

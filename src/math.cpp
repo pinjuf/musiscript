@@ -36,12 +36,23 @@ void ifft(double * in, double * out, int n, int sign) {
     }
 }
 
-std::vector<std::string> split_infix(std::string in) {
+int get_op_priority(std::string op) {
+    if (op == "+" || op == "-")
+        return 1;
+    else if (op == "*" || op == "/")
+        return 2;
+    else if (op == "^")
+        return 3;
+
+    return -1;
+}
+
+std::vector<std::string> split_infix(std::string in) { // This needs to be rewritten.
     std::vector<std::string> out;
     std::string tmp;
 
     for (int i = 0; i < in.size(); i++) {
-        if (in[i] == ' ') {
+        if (in[i] == ' ') {         // Space is a clear separator
             if (tmp.size() > 0) {
                 out.push_back(tmp);
                 tmp = "";
@@ -57,13 +68,19 @@ std::vector<std::string> split_infix(std::string in) {
             }
         }
 
-        if (is_single_special_char) {
+        if (is_single_special_char) { // Some operator/parentheses/comma was passed
+            if (in[i] == '-') { // A minus can be a unary operator or a negative number
+                if (out.empty() || get_op_priority(out.back()) > 0 || out.back() == "(") {
+                    tmp += in[i];
+                    continue;
+                }
+            }
             if (tmp.size() > 0) {
                 out.push_back(tmp);
                 tmp = "";
             }
             out.push_back(std::string(1, in[i]));
-        } else {
+        } else { // Any other char
             tmp += in[i];
         }
     }
@@ -213,17 +230,6 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
     *out = val_stack.top();
 
     return 0;
-}
-
-int get_op_priority(std::string op) {
-    if (op == "+" || op == "-")
-        return 1;
-    else if (op == "*" || op == "/")
-        return 2;
-    else if (op == "^")
-        return 3;
-
-    return -1;
 }
 
 bool is_left_associated(std::string op) {
