@@ -200,23 +200,47 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
             val_stack.push(true);
         else if (!strcmp(comm.c_str(), "false") || !strcmp(comm.c_str(), "0"))
             val_stack.push(false);
-        else if (!strcmp(comm.c_str(), "!")) {
+        else if (!strcmp(comm.c_str(), "not")) {
             if (val_stack.size() < 1) {return -1;}
             bool a = val_stack.top();val_stack.pop();
             a =! a;
             val_stack.push(a);
         }
-        else if (!strcmp(comm.c_str(), "&&")) {
+        else if (!strcmp(comm.c_str(), "and")) {
             if (val_stack.size() < 2) {return -1;}
             a = val_stack.top();val_stack.pop();
             b = val_stack.top();val_stack.pop();
             val_stack.push(a && b);
         }
-        else if (!strcmp(comm.c_str(), "||")) {
+        else if (!strcmp(comm.c_str(), "or")) {
             if (val_stack.size() < 2) {return -1;}
             a = val_stack.top();val_stack.pop();
             b = val_stack.top();val_stack.pop();
             val_stack.push(a || b);
+        }
+        else if (!strcmp(comm.c_str(), "xor")) {
+            if (val_stack.size() < 2) {return -1;}
+            a = val_stack.top();val_stack.pop();
+            b = val_stack.top();val_stack.pop();
+            val_stack.push(a ^ b);
+        }
+        else if (!strcmp(comm.c_str(), "nand")) {
+            if (val_stack.size() < 2) {return -1;}
+            a = val_stack.top();val_stack.pop();
+            b = val_stack.top();val_stack.pop();
+            val_stack.push(!(a && b));
+        }
+        else if (!strcmp(comm.c_str(), "nor")) {
+            if (val_stack.size() < 2) {return -1;}
+            a = val_stack.top();val_stack.pop();
+            b = val_stack.top();val_stack.pop();
+            val_stack.push(!(a || b));
+        }
+        else if (!strcmp(comm.c_str(), "xnor")) {
+            if (val_stack.size() < 2) {return -1;}
+            a = val_stack.top();val_stack.pop();
+            b = val_stack.top();val_stack.pop();
+            val_stack.push(!(a ^ b));
         }
         else {
             return -1;
