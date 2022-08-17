@@ -215,23 +215,23 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
     return 0;
 }
 
-int get_op_priority(char op) {
-    if (op == '+' || op == '-')
+int get_op_priority(std::string op) {
+    if (op == "+" || op == "-")
         return 1;
-    else if (op == '*' || op == '/')
+    else if (op == "*" || op == "/")
         return 2;
-    else if (op == '^')
+    else if (op == "^")
         return 3;
 
     return -1;
 }
 
-bool is_left_associated(char op) {
-    if (op == '^')
+bool is_left_associated(std::string op) {
+    if (op == "^")
         return false;
-    else if (op == '+' || op == '-')
+    else if (op == "+" || op == "-")
         return true;
-    else if (op == '*' || op == '/')
+    else if (op == "*" || op == "/")
         return true;
     return false;
 }
@@ -267,7 +267,7 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
             op_stack.pop(); // Discard top parenthesis
 
             // Check if top == function
-            if (!op_stack.empty() && get_op_priority(op_stack.top()[0]) == -1 && op_stack.top() != "(") {
+            if (!op_stack.empty() && get_op_priority(op_stack.top()) == -1 && op_stack.top() != "(") {
                 out.push_back(op_stack.top());
                 op_stack.pop();
             }
@@ -277,7 +277,7 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
 
         bool is_operator = false;
         for (char ch : OPERATORS) {
-            if (curr[0] == ch) {
+            if (curr == (std::string)&ch) {
                 is_operator = true;
                 break;
             }
@@ -290,8 +290,8 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
                 }
 
                 if (!( // Forgive me, oh future debugger
-                    (get_op_priority(curr_top[0])>get_op_priority(curr[0])) ||
-                    (get_op_priority(curr_top[0])==get_op_priority(curr[0]) && is_left_associated(curr_top[0]))
+                    (get_op_priority(curr_top)>get_op_priority(curr)) ||
+                    (get_op_priority(curr_top)==get_op_priority(curr) && is_left_associated(curr_top))
                     )) {
                     break;
                 }
