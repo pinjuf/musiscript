@@ -69,8 +69,12 @@ std::vector<std::string> split_infix(std::string in) { // Tokenizer, this needs 
         }
 
         if (is_single_special_char) { // Some operator/parentheses/comma was passed
-            if (in[i] == '-') { // A minus can be a unary operator or a negative number
-                if (out.empty() || get_op_priority(out.back()) > 0 || out.back() == "(") {
+            if (in[i] == '-' || in[i] == '+') { // A minus/plus can be a unary operator or a sign indicator
+                if (tmp.empty() && out.empty()) { // If it's the first character, it's a unary operator
+                    tmp += in[i];
+                    continue;
+                }
+                if (!out.empty() && (out.back() == "(" || get_op_priority(out.back()) > 0)) { // If it's after an opening parenthesis or an operator, it's a unary operator
                     tmp += in[i];
                     continue;
                 }
