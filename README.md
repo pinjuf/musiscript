@@ -64,6 +64,7 @@ Alternatively, you may pass a frequency as a floating point number with an `r` p
 Musiscript is capable of reading infix notation. To enter infix notation mode, put an expression in square braces.
 Valid operators are `^+-*/`. Other functions are defined in the reverse polish notation parser.
 > For the interested: To eval an infix statement, it is first converted to RPN, and then passed to an RPN parser.
+> Currently, the tokenizer is broken. Therefore, please make sure that your infix notations are clearly divisible by using spaces, parentheses and commas. Valid: `1 + 2 * (1 + 5)` Invalid: `1+2*(1+5)` Feel free to contribute a working tokenizer.
 
 ### Variables
 
