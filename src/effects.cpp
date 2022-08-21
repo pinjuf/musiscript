@@ -84,7 +84,7 @@ double Effect::get_through_freq_effect(double freq, size_t rel_sample_count, siz
     switch (effect) {
         case NO_EFFECT:
         default:
-            timeinto = 0; // Just to make the compiler happy, fuck you @Miezekatze64
+            timeinto = timeinto; // Just to make the compiler happy, fuck you @Miezekatze64
             break;
     }
 
