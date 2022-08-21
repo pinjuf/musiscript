@@ -51,7 +51,7 @@ std::vector<std::string> split_infix(std::string in) { // Tokenizer, this needs 
     std::vector<std::string> out;
     std::string tmp;
 
-    for (int i = 0; i < in.size(); i++) {
+    for (size_t i = 0; i < in.size(); i++) {
         if (in[i] == ' ') {         // Space is a clear separator
             if (tmp.size() > 0) {
                 out.push_back(tmp);
@@ -111,7 +111,7 @@ std::vector<std::string> split_infix_logical(std::string in) { // Tokenizer for 
     std::vector<std::string> out;
     std::string tmp;
 
-    for (int i = 0; i < in.size(); i++) {
+    for (size_t i = 0; i < in.size(); i++) {
         if (in[i] == ' ') {         // Space is a clear separator
             if (tmp.size() > 0) {
                 out.push_back(tmp);

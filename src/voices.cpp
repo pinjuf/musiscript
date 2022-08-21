@@ -249,7 +249,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     log(LOG_WARNING, ("Unknown/silent effect name: " + tokens[2]).c_str(), true);
                 }
 
-                for (int i = 3; i < tokens.size(); i++) {
+                for (size_t i = 3; i < tokens.size(); i++) {
                     try {
                         effect.settings[i-3] = std::stod(tokens[i].c_str());
                     } catch (std::invalid_argument) {
@@ -340,7 +340,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
             std::vector<std::string> note_tokens = split_string(tokens[1], ',');
             std::vector<double> freqs;
-            for (int i = 0; i < note_tokens.size(); i++) {
+            for (size_t i = 0; i < note_tokens.size(); i++) {
                 if (note_tokens[i][0] == 'r') { // 'r' prefix: raw frequency input
                     try {
                         freqs.push_back(std::stod(note_tokens[i].c_str() + 1));
@@ -362,7 +362,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             std::vector<std::string> duration_tokens = split_string(tokens[2], ',');
             std::vector<double> durations;
-            for (int i = 0; i < duration_tokens.size(); i++) {
+            for (size_t i = 0; i < duration_tokens.size(); i++) {
                 try {
                     durations.push_back(std::stod(duration_tokens[i].c_str()));
                 } catch (std::invalid_argument) {
@@ -377,20 +377,20 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 stereosample.l = 0;stereosample.r = 0;
 
                 size_t baked_i = i; // Used mainly for vibrato
-                for (int k = 0; k < effects.size(); k++) {
+                for (size_t k = 0; k < effects.size(); k++) {
                     baked_i = effects[k].get_through_i_effect(baked_i, i, counter);
                 }
 
-                for (int j = 0; j < freqs.size(); j++) {
+                for (size_t j = 0; j < freqs.size(); j++) {
                     double baked_freq = freqs[j];
-                    for (int k = 0; k < effects.size(); k++)
+                    for (size_t k = 0; k < effects.size(); k++)
                         baked_freq = effects[k].get_through_freq_effect(freqs[j], i, counter);
                     // Get the amplitude, add the panning effect and divide by the number of frequencies to get the average amplitude
                     stereosample.l += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * (1 - pan) / freqs.size();
                     stereosample.r += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
                 }
 
-                for (int j = 0; j < effects.size(); j++)
+                for (size_t j = 0; j < effects.size(); j++)
                      effects[j].get_through_amp_effect(&stereosample, i, counter);
 
                 stereosample.l *= volume;
@@ -465,7 +465,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 continue;
             }
             std::string value = "";
-            for (int i = 2; i < tokens.size(); i++) {
+            for (size_t i = 2; i < tokens.size(); i++) {
                 value += tokens[i];
                 if (i != tokens.size() - 1)
                     value += " ";
@@ -788,10 +788,10 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         }
     }
 
-    for (int i = 0; i < effects.size(); i++)
+    for (size_t i = 0; i < effects.size(); i++)
         effects[i].get_through_buffer_effect(&samples);
 
-    for (int i = 0; i < samples.size(); i++) { // Add the samples to the output vector
+    for (size_t i = 0; i < samples.size(); i++) { // Add the samples to the output vector
         if (i < outsamples->size()) {
             outsamples->at(i).l += samples[i].l;
             outsamples->at(i).r += samples[i].r;
