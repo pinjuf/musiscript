@@ -38,7 +38,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stod(tokens[1]);
             b = std::stod(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
 
@@ -57,7 +57,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stod(tokens[1]);
             b = std::stod(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
 
@@ -76,7 +76,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stod(tokens[1]);
             b = std::stod(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
 
@@ -95,7 +95,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stod(tokens[1]);
             b = std::stod(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
 
@@ -113,7 +113,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stod(tokens[1]);
             b = std::stod(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
 
@@ -134,7 +134,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stoi(tokens[1]);
             b = std::stoi(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
         int res = a + rand() % (b - a);
@@ -148,7 +148,7 @@ int eval_codepointer(std::string input, std::string * output) {
         try {
             a = std::stod(tokens[1]);
             b = std::stod(tokens[2]);
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             return -1;
         }
         double res = a + (b - a) * ((double)rand() / (double)RAND_MAX);

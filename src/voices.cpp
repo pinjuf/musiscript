@@ -158,7 +158,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
             try {
                 pan = std::stod(tokens[1]);
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (pan)", true);
             }
         }
@@ -172,7 +172,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
             try {
                 volume = std::stod(tokens[1]);
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (volume)", true);
             }
         }
@@ -186,7 +186,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
             try {
                 speed = std::stod(tokens[1]);
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (speed)", true);
             }
         }
@@ -205,7 +205,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 try {
                     sound = (SOUNDS)std::stoi(tokens[1]);
                     log(LOG_WARNING, "Using a sound index is deprecated and may become problematic in the future. Please use the sound name instead.", true);
-                } catch (std::invalid_argument) {}
+                } catch (std::invalid_argument const&) {}
             }
 
             if (sound == SILENCE) {
@@ -222,7 +222,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             }
             try {
                 transpose = std::stoi(tokens[1]);
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (transpose)", true);
             }
         }
@@ -242,7 +242,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     try {
                         effect.effect = (EFFECTS)std::stoi(tokens[2]);
                         log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.", true);
-                    } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
+                    } catch (std::invalid_argument const&) {} // No need, warning happens on NO_EFFECT check
                 }
 
                 if (effect.effect == NO_EFFECT) {
@@ -252,7 +252,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 for (size_t i = 3; i < tokens.size(); i++) {
                     try {
                         effect.settings[i-3] = std::stod(tokens[i].c_str());
-                    } catch (std::invalid_argument) {
+                    } catch (std::invalid_argument const&) {
                         log(LOG_ERROR, "Invalid argument (effect a)", true);
                         continue;
                     }
@@ -285,7 +285,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     try {
                         r = (EFFECTS)std::stoi(tokens[2]);
                         log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.", true);
-                    } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
+                    } catch (std::invalid_argument const&) {} // No need, warning happens on NO_EFFECT check
                 }
 
                 if (r == NO_EFFECT) {
@@ -314,7 +314,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     try {
                         r = (EFFECTS)std::stoi(tokens[2]);
                         log(LOG_WARNING, "Using an effect index is deprecated and may become problematic in the future. Use the corresponding effect name.", true);
-                    } catch (std::invalid_argument) {} // No need, warning happens on NO_EFFECT check
+                    } catch (std::invalid_argument const&) {} // No need, warning happens on NO_EFFECT check
                 }
 
                 if (r == NO_EFFECT) {
@@ -344,7 +344,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 if (note_tokens[i][0] == 'r') { // 'r' prefix: raw frequency input
                     try {
                         freqs.push_back(std::stod(note_tokens[i].c_str() + 1));
-                    } catch (std::invalid_argument) {
+                    } catch (std::invalid_argument const&) {
                         log(LOG_ERROR, "Invalid argument (n)", true);
                         continue;
                     }
@@ -365,7 +365,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             for (size_t i = 0; i < duration_tokens.size(); i++) {
                 try {
                     durations.push_back(std::stod(duration_tokens[i].c_str()));
-                } catch (std::invalid_argument) {
+                } catch (std::invalid_argument const&) {
                     log(LOG_ERROR, "Invalid argument (n)", true);
                     continue;
                 }
@@ -424,7 +424,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             double duration;
             try {
                 duration = std::stod(tokens[1].c_str());
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (p)", true);
                 continue;
             }
@@ -448,7 +448,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             double timestamp;
             try {
                 timestamp = std::stod(tokens[1].c_str()) * SAMPLING_RATE / speed;
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (w)", true);
                 continue;
             }
@@ -556,7 +556,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             int n;
             try {
                 n = atoi(tokens[1].c_str());
-            } catch (std::invalid_argument) {
+            } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (rep)", true);
                 continue;
             }

@@ -152,7 +152,7 @@ int rpn(std::string in, double * out) {
     for (std::string comm : input) {
         try {
             val_stack.push(stod(comm, NULL));
-        } catch (std::invalid_argument) {
+        } catch (std::invalid_argument const&) {
             if (!strcmp(comm.c_str(), "+")) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
@@ -325,7 +325,7 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
             stod(curr, NULL);
             out.push_back(curr);
             continue;
-        } catch (std::invalid_argument) {}
+        } catch (std::invalid_argument const&) {}
 
         if (curr == "(") { // Scenario 2: Open Parenthesis
             op_stack.push(curr);

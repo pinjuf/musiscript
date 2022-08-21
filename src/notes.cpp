@@ -35,7 +35,7 @@ double get_freq_by_name(char * name, int transpose) {
     int octave;
     try {
         octave = std::stoi(name+1) - 4; // Reference frequency is 4 octaves up
-    } catch (std::invalid_argument) {
+    } catch (std::invalid_argument const&) {
         return -1;
     }
 

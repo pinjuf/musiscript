@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS =
+CXXFLAGS = -Wall -Wextra
 LDFLAGS += $(CXXFLAGS)
 MAKEFLAGS = -j4
 
