@@ -79,9 +79,12 @@ double Effect::get_through_freq_effect(double freq, size_t rel_sample_count, siz
         return freq;
     }
 
+    double timeinto = ((double) rel_sample_count)/SAMPLING_RATE;
+
     switch (effect) {
         case NO_EFFECT:
         default:
+            timeinto = 0; // Just to make the compiler happy, fuck you @Miezekatze64
             break;
     }
 
@@ -112,7 +115,7 @@ size_t Effect::get_through_i_effect(size_t i, size_t rel_sample_count, size_t ab
 }
 
 void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
-    // Here, the 'end'-check must be performed individually for each effect, as they all go through the whole buffer
+    // Here, the 'end'-check must be performed individually for each effect, as they all go through the whole buffer in their own way.
     switch (effect) {
         case BUF_SMOOTH: {
             std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
@@ -127,7 +130,7 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 int64_t l = 0;
                 int64_t r = 0;
                 for (int j = -settings[0]; j <= settings[0]; j++) {
-                    if (i+j < buffer->size() && i+j >= 0) {
+                    if (i+j < buffer->size() && ((int)i+j) >= 0) {
                         l += tempbuffer->at(i+j).l;
                         r += tempbuffer->at(i+j).r;
                     }

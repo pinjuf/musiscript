@@ -28,7 +28,7 @@ double get_freq_by_name(char * name, int transpose) {
                 transpose--;
                 break;
             default:
-                transpose;
+                transpose += 0;
         }
     }
 

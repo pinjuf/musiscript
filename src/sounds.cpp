@@ -8,7 +8,7 @@
 int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, double hz) {
     i /= hz;
     i *= freq;
-    double out;
+    double out = 0;
 
     switch (sound) {
         case SINE:
