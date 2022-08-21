@@ -47,57 +47,50 @@ int get_op_priority(std::string op) {
     return -1;
 }
 
-std::vector<std::string> split_infix(std::string in) { // Tokenizer, this needs to be rewritten.
+std::vector<std::string> split_infix(std::string in) { // Tokenizer, needs to be tested
     std::vector<std::string> out;
     std::string tmp;
 
     for (size_t i = 0; i < in.size(); i++) {
-        if (in[i] == ' ') {         // Space is a clear separator
-            if (tmp.size() > 0) {
-                out.push_back(tmp);
-                tmp.clear();
-            }
-        }
-
-        else if (in[i] == '(' || in[i] == ')' || in[i] == ',') {
-            if (tmp.size() > 0) {
-                out.push_back(tmp);
-                tmp.clear();
-            }
-            out.push_back(std::string(sizeof(typeof in[i]), in[i]));
-        }
-
-        else tmp += in[i];
-
-        /* Broken tokenizer, cannot differentiate between unary ops and binary ops
-        bool is_single_special_char = false;
-        for (int j = 0; j < strlen(OPERATORS"(),"); j++) {
-            if (in[i] == (OPERATORS"(),")[j]) {
-                is_single_special_char = true;
+        // Check if the current char can cause a split
+        bool is_splitter = false;
+        for (size_t j = 0; j < sizeof(OPERATORS" (),") / sizeof(char); j++) {
+            if (in[i] == OPERATORS" (),"[j]) {
+                is_splitter = true;
                 break;
             }
         }
 
-        if (is_single_special_char) { // Some operator/parentheses/comma was passed
-            if (in[i] == '-' || in[i] == '+') { // A minus/plus can be a unary operator or a sign indicator
-                if (tmp.empty()) { // If it's the first character, it's a unary operator
-                    tmp += in[i];
-                    continue;
+        if (is_splitter) {
+            if (in[i] == ' ') { // Spaces shouldn't be added as a token
+                if (tmp.size() > 0) {
+                    out.push_back(tmp);
+                    tmp.clear();
                 }
-                else if (!out.empty() && (out.back() == "(" || get_op_priority(out.back()) > 0)) { // If it's after an opening parenthesis or an operator, it's a unary operator
-                    tmp += in[i];
-                    continue;
+                continue;
+            }
+
+            if (in[i] == '+' || in[i] == '-') { // Check if the current char is a sign
+                if (tmp.empty()) { // If the current token is empty, it's likely a sign
+                    if (out.empty()) { // If the output is empty, it's a sign
+                        tmp += in[i];
+                        continue;
+                    } else if (out.back() != ")") { // If the last token is a bracket, it's a sign
+                        tmp += in[i];
+                        continue;
+                    }
                 }
             }
+
             if (tmp.size() > 0) {
                 out.push_back(tmp);
-                tmp = "";
+                tmp.clear();
             }
             out.push_back(std::string(1, in[i]));
-        } else { // Any other char
+
+        } else { // Normal char, add it to the tmp string
             tmp += in[i];
         }
-        */
     }
 
     if (tmp.size() > 0) {
