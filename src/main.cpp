@@ -17,7 +17,15 @@ int main() {
     srand(time(0));
 #endif
 
-    for (auto& file : std::filesystem::directory_iterator(DATA_DIR)) {
+    std::filesystem::directory_iterator voice_files;
+    try {
+        voice_files = std::filesystem::directory_iterator(DATA_DIR);
+    } catch (std::filesystem::filesystem_error & e) {
+        log(LOG_FATAL, "Failed to open data directory");
+        return 1;
+    }
+
+    for (auto& file : voice_files) {
         if (file.path().extension() == VOICE_SUFFIX) {
             voice = new Voice();
             log(LOG_INFO, ("Reading voice file " + file.path().string()).c_str());
