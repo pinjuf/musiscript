@@ -62,11 +62,7 @@ std::vector<std::string> split_infix(std::string in) { // Tokenizer, needs to be
         }
 
         if (is_splitter) {
-            if (in[i] == ' ') { // Spaces shouldn't be added as a token
-                if (tmp.size() > 0) {
-                    out.push_back(tmp);
-                    tmp.clear();
-                }
+            if (in[i] == ' ') {
                 continue;
             }
 
@@ -344,23 +340,20 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
             continue;
         }
 
-        bool is_operator = false;
-        for (char ch : OPERATORS) {
-            if (curr == (std::string)&ch) {
-                is_operator = true;
-                break;
-            }
-        }
+        bool is_operator = get_op_priority(curr) != -1;
         if (is_operator) { // Scenario 4: Operator
             while (!op_stack.empty()) {
                 std::string curr_top = op_stack.top();
                 if (curr_top == "(") {
                     break;
                 }
+                if (get_op_priority(curr_top) < 0) {
+                    break;
+                }
 
                 if (!( // Forgive me, oh future debugger
                     (get_op_priority(curr_top)>get_op_priority(curr)) ||
-                    (get_op_priority(curr_top)==get_op_priority(curr) && is_left_associated(curr_top))
+                    (get_op_priority(curr_top)==get_op_priority(curr) && is_left_associated(curr))
                     )) {
                     break;
                 }
@@ -458,8 +451,9 @@ int eval_infix(std::string in, double * out) {
         return -1;
     }
     std::string tmp;
-    for (std::string curr : postfix)
+    for (std::string curr : postfix) // That's a bodge
         tmp += curr + " ";
+
     if (rpn(tmp, out) == -1) {
         return -1;
     }
