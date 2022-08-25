@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "math.h"
+#include "util.h"
 
 void fft(double * in, double * out, int n, int sign) {
     if (n == 1) {
@@ -47,7 +48,53 @@ int get_op_priority(std::string op) {
     return -1;
 }
 
+std::string replace_unary_ops(std::string & in) {
+    // Basic concept
+    // 1. Read the input string from left to right
+    // 2. If it's an operator, add it to the positive var
+    // 3. If it's something else and we're parsing,
+    //    replace the last operator according to the positive var and the following ops with spaces
+
+    bool parsing = false;
+    bool positive = true;
+
+    size_t last_pos = 0;
+
+    for (size_t i = 0; i < in.length(); i++) {
+        if (in[i] == '+') {
+            if (!parsing)
+                last_pos = i;
+            parsing = true;
+        }
+        else if (in[i] == '-') {
+            if (!parsing) {
+                last_pos = i;
+            }
+            positive = !positive;
+            parsing = true;
+        }
+        else if (parsing) {
+            parsing = false;
+            if (positive)
+                in[last_pos] = '+';
+            else
+                in[last_pos] = '-';
+
+            for (size_t j = last_pos + 1; j < i; j++)
+                in[j] = ' ';
+
+            positive = true;
+        }
+    }
+
+    return in;
+}
+
 std::vector<std::string> split_infix(std::string in) { // Tokenizer, needs to be tested
+    // TODO: Replace series of unary operators with one operator
+    in = replace_all(in, " ", "");
+    in = replace_unary_ops(in);
+
     std::vector<std::string> out;
     std::string tmp;
 
@@ -130,13 +177,7 @@ std::vector<std::string> split_infix_logical(std::string in) { // Tokenizer for 
 int rpn(std::string in, double * out) {
     std::stack<double> val_stack;
     double a, b;
-    std::vector<std::string> input;
-    std::stringstream ss(in);
-    std::string tok;
-    while(getline(ss, tok, ' ')) {
-        if (!tok.empty())
-            input.push_back(tok);
-    }
+    std::vector<std::string> input = split_string(in, ' ');
 
     for (std::string comm : input) {
         try {
