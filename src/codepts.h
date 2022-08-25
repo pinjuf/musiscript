@@ -2,8 +2,9 @@
 #define CODEPTS_H
 
 #include <string>
-#include <string.h>
 
-int eval_codepointer(std::string input, std::string * output);
+#include "voices.h"
+
+int eval_codepointer(std::string input, std::string * output, Voice & vc);
 
 #endif

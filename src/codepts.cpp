@@ -1,4 +1,6 @@
 #include "codepts.h"
+#include "util.h"
+#include "wav.h"
 
 #include <stdexcept>
 #include <vector>
@@ -6,16 +8,9 @@
 #include <math.h>
 #include <iomanip>
 #include <random>
+#include <string.h>
 
-std::string dtostr(double d)
-{
-    std::ostringstream oss;
-    oss << std::setprecision(32);
-    oss << d;
-    return oss.str();
-}
-
-int eval_codepointer(std::string input, std::string * output) {
+int eval_codepointer(std::string input, std::string * output, Voice & vc) {
 
     std::vector<std::string> tokens;
 
@@ -48,7 +43,7 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "false";
     }
 
-    if (!strcmp(tokens[0].c_str(), "numgt") ||
+    else if (!strcmp(tokens[0].c_str(), "numgt") ||
         !strcmp(tokens[0].c_str(), ">")) {
         double a, b;
         if (tokens.size() != 3)
@@ -67,7 +62,7 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "false";
     }
 
-    if (!strcmp(tokens[0].c_str(), "numlt") ||
+    else if (!strcmp(tokens[0].c_str(), "numlt") ||
         !strcmp(tokens[0].c_str(), "<")) {
         double a, b;
         if (tokens.size() != 3)
@@ -86,7 +81,7 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "false";
     }
 
-    if (!strcmp(tokens[0].c_str(), "numgeqt") ||
+    else if (!strcmp(tokens[0].c_str(), "numgeqt") ||
         !strcmp(tokens[0].c_str(), ">=")) {
         double a, b;
         if (tokens.size() != 3)
@@ -105,7 +100,7 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "false";
     }
 
-    if (!strcmp(tokens[0].c_str(), "numleqt") ||
+    else if (!strcmp(tokens[0].c_str(), "numleqt") ||
         !strcmp(tokens[0].c_str(), "<=")) {
         double a, b;
         if (tokens.size() != 3)
@@ -123,11 +118,11 @@ int eval_codepointer(std::string input, std::string * output) {
             *output = "false";
     }
 
-    if (!strcmp(tokens[0].c_str(), "pi")) {
+    else if (!strcmp(tokens[0].c_str(), "pi")) {
         *output = dtostr(M_PI);
     }
 
-    if (!strcmp(tokens[0].c_str(), "randint")) {
+    else if (!strcmp(tokens[0].c_str(), "randint")) {
         if (tokens.size() != 3)
             return -1;
         int a, b;
@@ -141,7 +136,7 @@ int eval_codepointer(std::string input, std::string * output) {
         *output = dtostr(res);
     }
 
-    if (!strcmp(tokens[0].c_str(), "randfloat")) {
+    else if (!strcmp(tokens[0].c_str(), "randfloat")) {
         if (tokens.size() != 3)
             return -1;
         double a, b;
@@ -153,6 +148,18 @@ int eval_codepointer(std::string input, std::string * output) {
         }
         double res = a + (b - a) * ((double)rand() / (double)RAND_MAX);
         *output = dtostr(res);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "currsamples")) {
+        *output = dtostr(vc.counter);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "currtime")) {
+        *output = dtostr((float)vc.counter / SAMPLING_RATE);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "samplingrate")) {
+        *output = dtostr(SAMPLING_RATE);
     }
 
     return 0;

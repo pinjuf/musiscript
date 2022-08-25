@@ -24,6 +24,8 @@ class Voice {
 
         void read_from_file(char * filename, std::vector<StereoSample> * outsamples);
 
+        size_t counter = 0;
+
     private:
         std::vector<Effect> effects;
         std::map<std::string,std::string> defs;

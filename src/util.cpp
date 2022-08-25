@@ -1,6 +1,8 @@
 #include "util.h"
+#include "config.h"
 
 #include <sstream>
+#include <iomanip>
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -20,4 +22,11 @@ std::string replace_all(std::string& str, const std::string& from, const std::st
         start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
     }
     return str;
+}
+
+std::string dtostr(double d) {
+    std::ostringstream oss;
+    oss << std::setprecision(DIGIT_PREC); // Never enough precision for a double, TODO: Move to prec to config and func to utils
+    oss << d;
+    return oss.str();
 }

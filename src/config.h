@@ -10,4 +10,6 @@
 #define DO_COLOR_LOG true
 #define CONSTANT_SRAND false
 
+#define DIGIT_PREC 32
+
 #endif

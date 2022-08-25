@@ -15,6 +15,7 @@
 #include "math.h"
 #include "codepts.h"
 #include "util.h"
+#include "config.h"
 
 size_t get_current_line(std::ifstream& file) {
     size_t current_pos = file.tellg();
@@ -60,7 +61,7 @@ std::string Voice::replace_infix_with_vals(std::string line) {
             return line;
         }
         std::stringstream ss;
-        ss << std::setprecision(32) << infix_result;
+        ss << std::setprecision(DIGIT_PREC) << infix_result;
         line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), ss.str());
     }
 
@@ -76,7 +77,7 @@ std::string Voice::replace_codepts_with_vals(std::string line) {
         }
         std::string codept_name = line.substr(start_pos + 1, end_pos - start_pos - 1);
         std::string * codept_result =  new std::string();
-        if (eval_codepointer(codept_name, codept_result) < 0) {
+        if (eval_codepointer(codept_name, codept_result, *this) < 0) {
             log(LOG_ERROR, "Invalid code pointer", true);
             return line;
         }
@@ -100,7 +101,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     std::string line;
     std::vector<std::string> tokens;
 
-    size_t counter = 0;
+    counter = 0;
     size_t line_num;
 
     std::vector<StereoSample> samples = {};
