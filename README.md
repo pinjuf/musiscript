@@ -74,7 +74,7 @@ Variables can be declared as seen above. Internally speaking, they all are strin
 sound TRIANGLE
 speed 48
 
-def halftonestep [2 1 12 / ^]
+def halftonestep [2*(1/12)]
 
 sub octave
     rep 12
