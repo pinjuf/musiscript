@@ -1,4 +1,5 @@
 #include "codepts.h"
+#include "notes.h"
 #include "util.h"
 #include "wav.h"
 
@@ -176,6 +177,16 @@ int eval_codepointer(std::string input, std::string * output, Voice & vc) {
         rr = r * WavFile::def_amp;
         StereoSample sample = {ll, rr};
         vc.samples.push_back(sample);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "freqof")) {
+        if (tokens.size() != 2)
+            return -1;
+
+        double out = get_freq_by_name((char*)tokens[1].c_str(), vc.transpose);
+        if (out == -1)
+            return -1;
+        *output = dtostr(out);
     }
 
     return 0;
