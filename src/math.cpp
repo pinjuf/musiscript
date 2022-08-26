@@ -244,6 +244,17 @@ int rpn(std::string in, double * out) {
                 val_stack.push(a);
             }
 
+            else if (!strcmp(comm.c_str(), "sin")) {
+                if (val_stack.size() < 1) {return -1;}
+                a = val_stack.top();val_stack.pop();
+                val_stack.push(sin(a));
+            }
+            else if (!strcmp(comm.c_str(), "cos")) {
+                if (val_stack.size() < 1) {return -1;}
+                a = val_stack.top();val_stack.pop();
+                val_stack.push(cos(a));
+            }
+
             else {
                 return -1;
             }

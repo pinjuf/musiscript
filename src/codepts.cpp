@@ -11,7 +11,6 @@
 #include <string.h>
 
 int eval_codepointer(std::string input, std::string * output, Voice & vc) {
-
     std::vector<std::string> tokens;
 
     std::stringstream ss(input);
@@ -160,6 +159,23 @@ int eval_codepointer(std::string input, std::string * output, Voice & vc) {
 
     else if (!strcmp(tokens[0].c_str(), "samplingrate")) {
         *output = dtostr(SAMPLING_RATE);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "mansample")) {
+        if (tokens.size() != 3)
+            return -1;
+        double l, r;
+        try {
+            l = std::stod(tokens[1]);
+            r = std::stod(tokens[2]);
+        } catch (std::invalid_argument const&) {
+            return -1;
+        }
+        int16_t ll, rr;
+        ll = l * WavFile::def_amp;
+        rr = r * WavFile::def_amp;
+        StereoSample sample = {ll, rr};
+        vc.samples.push_back(sample);
     }
 
     return 0;

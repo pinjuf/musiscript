@@ -36,6 +36,5 @@ nvim_uninstall: util/musiscript.vim
 
 install: $(TARGET)
 	cp $(TARGET) /usr/bin/
-
 uninstall:
 	rm -f /usr/bin/$(TARGET)

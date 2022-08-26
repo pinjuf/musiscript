@@ -26,6 +26,8 @@ class Voice {
 
         size_t counter = 0;
 
+        std::vector<StereoSample> samples;
+
     private:
         std::vector<Effect> effects;
         std::map<std::string,std::string> defs;
