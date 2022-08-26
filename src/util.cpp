@@ -26,7 +26,7 @@ std::string replace_all(std::string& str, const std::string& from, const std::st
 
 std::string dtostr(double d) {
     std::ostringstream oss;
-    oss << std::setprecision(DIGIT_PREC); // Never enough precision for a double, TODO: Move to prec to config and func to utils
+    oss << std::setprecision(DIGIT_PREC);
     oss << d;
     return oss.str();
 }

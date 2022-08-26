@@ -47,42 +47,64 @@ std::string Voice::replace_defs_with_vals(std::string line) {
     return line;
 }
 
-std::string Voice::replace_infix_with_vals(std::string line) {
-    size_t start_pos = 0;
-    double infix_result;
-    while((start_pos = line.find('[', start_pos)) != std::string::npos) {
-        size_t end_pos = line.find(']', start_pos);
-        if (end_pos == std::string::npos) {
-            break;
-        }
-        std::string infix = line.substr(start_pos + 1, end_pos - start_pos - 1);
-        if (eval_infix(infix, &infix_result) < 0) {
-            log(LOG_ERROR, "Invalid infix notation", true);
-            return line;
-        }
-        std::stringstream ss;
-        ss << std::setprecision(DIGIT_PREC) << infix_result;
-        line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), ss.str());
+std::string Voice::replace_infix_codepts_with_vals(std::string line) {
+    // Codepointers and Infix notations may be nested.
+    // Codepointers use curly braces, infix uses square brackets.
+    // We need to replace them by their depth.
+    // We do this by replacing codepointers/infixes that don't contain any other codepointers/infixes first,
+    // then repeat that process until there are non left.
+    // We should be able to recognize mismatched braces and log an error in that case.
+
+    size_t blocks = 0;
+    for (size_t i = 0; i < line.size(); i++) { // Count the number of "blocks"
+        if (line[i] == ']' || line[i] == '}')
+            blocks++;
     }
 
-    return line;
-}
-
-std::string Voice::replace_codepts_with_vals(std::string line) {
-    size_t start_pos = 0;
-    while((start_pos = line.find('{', start_pos)) != std::string::npos) {
-        size_t end_pos = line.find('}', start_pos);
-        if (end_pos == std::string::npos) {
-            break;
+    for (size_t i = 0; i < blocks; i++) { // For each block, traverse the whole line
+        size_t next_closing = line.find(']', 0); // Get first closing brace
+        if (line.find('}', 0) < next_closing) {
+            next_closing = line.find('}', 0);
         }
-        std::string codept_name = line.substr(start_pos + 1, end_pos - start_pos - 1);
-        std::string * codept_result =  new std::string();
-        if (eval_codepointer(codept_name, codept_result, *this) < 0) {
-            log(LOG_ERROR, "Invalid code pointer", true);
+
+        // Get the last opening brace before the closing brace, rfind isn't working because i am to lazy
+        size_t matching_opening = std::string::npos;
+        for (size_t j = 0; j < next_closing; j++) {
+            if (line[j] == '[' || line[j] == '{') {
+                matching_opening = j;
+            }
+        }
+
+        if (next_closing == std::string::npos || matching_opening == std::string::npos) {
+            log(LOG_ERROR, "Missing codepointer/infix braces", true);
             return line;
         }
-        line = replace_all(line, line.substr(start_pos, end_pos - start_pos + 1), *codept_result);
-        delete codept_result;
+
+        if (line[next_closing] == '}') { // Codepointer
+            std::string codept_name = line.substr(matching_opening + 1, next_closing - matching_opening - 1);
+            std::string codept_result;
+
+            if (eval_codepointer(codept_name, &codept_result, *this) < 0) {
+                log(LOG_ERROR, "Invalid code pointer", true);
+                return line;
+            }
+
+            line = replace_all(line, line.substr(matching_opening, next_closing - matching_opening + 1), codept_result);
+        }
+
+        else if (line[next_closing] == ']') { // Infix
+            std::string infix = line.substr(matching_opening + 1, next_closing - matching_opening - 1);
+            double infix_result;
+
+            if (eval_infix(infix, &infix_result) < 0) {
+                log(LOG_ERROR, "Invalid infix notation", true);
+                return line;
+            }
+
+            std::stringstream ss;
+            ss << std::setprecision(DIGIT_PREC) << infix_result;
+            line = replace_all(line, line.substr(matching_opening, next_closing - matching_opening + 1), ss.str());
+        }
     }
 
     return line;
@@ -121,8 +143,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
         line = replace_defs_with_vals(line);
 
-        line = replace_infix_with_vals(line); // TODO: Allow nested infixs and codepointers
-        line = replace_codepts_with_vals(line);
+        line = replace_infix_codepts_with_vals(line);
 
         tokens = split_string(line, ' ');
 

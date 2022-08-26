@@ -91,7 +91,6 @@ std::string replace_unary_ops(std::string & in) {
 }
 
 std::vector<std::string> split_infix(std::string in) { // Tokenizer, needs to be tested
-    // TODO: Replace series of unary operators with one operator
     in = replace_all(in, " ", "");
     in = replace_unary_ops(in);
 
