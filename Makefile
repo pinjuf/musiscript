@@ -6,6 +6,9 @@ MAKEFLAGS = -j4
 OBJS = src/main.o src/util.o src/wav.o src/sounds.o src/voices.o src/notes.o src/effects.o src/logging.o src/math.o src/codepts.o
 TARGET = musiscript
 
+all: $(TARGET)
+.PHONY: all run clean play
+
 $(TARGET): $(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
