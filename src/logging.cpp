@@ -15,6 +15,9 @@ void setloglevel(LOGLEVEL level) {
 }
 
 void log(LOGLEVEL level, const char * msg, bool incl_line_num) {
+#if !DO_LOGLINENUMBER
+    incl_line_num = false;
+#endif
     if (level >= loglevel) {
         if (incl_line_num)
             std::cout << LOGCOLORS[level] << LOGPREFIXES[level] << RESET_COLOR << " L" << *line_num << ": " << msg << std::endl;

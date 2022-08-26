@@ -136,7 +136,9 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     set_line_num_ptr(&line_num); // Connect to logging system
 
     while(getline(file, line)) {
+#if DO_LOGLINENUMBER
         line_num = get_current_line(file); // Update line number for logging system, rather inefficient but simple
+#endif
 
         line = strip_line(line);
         line = remove_comments(line);
