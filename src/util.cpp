@@ -30,3 +30,9 @@ std::string dtostr(double d) {
     oss << d;
     return oss.str();
 }
+
+std::string strip_line(std::string str) {
+    str.erase(0, str.find_first_not_of(" \n\r\t"));
+    str.erase(str.find_last_not_of(" \n\r\t") + 1);
+    return str;
+}

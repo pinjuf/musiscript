@@ -34,12 +34,6 @@ size_t get_current_line(std::ifstream& file) {
     return line_count;
 }
 
-std::string strip_line(std::string str) {
-    str.erase(0, str.find_first_not_of(" \n\r\t"));
-    str.erase(str.find_last_not_of(" \n\r\t") + 1);
-    return str;
-}
-
 std::string Voice::replace_defs_with_vals(std::string line) {
     for (auto const & x : defs) { // Replace all defined variables
         line = replace_all(line, x.first, x.second);

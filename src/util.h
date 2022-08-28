@@ -10,4 +10,6 @@ std::string replace_all(std::string& str, const std::string& from, const std::st
 
 std::string dtostr(double d);
 
+std::string strip_line(std::string str);
+
 #endif
