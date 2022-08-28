@@ -182,8 +182,14 @@ int rpn(std::string in, double * out) {
     std::stack<double> val_stack;
     double a, b;
     std::vector<std::string> input = split_string(in, ' ');
+    int sign;
 
     for (std::string comm : input) {
+        sign = 1;
+        if (comm[0] == '-') { // Hacky fix for tokens like -sin(...)
+            sign = -1;
+            comm = comm.substr(1);
+        }
         try {
             val_stack.push(stod(comm, NULL));
         } catch (std::invalid_argument const&) {
@@ -221,43 +227,35 @@ int rpn(std::string in, double * out) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
-                val_stack.push(fmod(b,a));
+                val_stack.push(fmod(b,a)*sign);
             }
 
             else if (!strcmp(comm.c_str(), "pow") || !strcmp(comm.c_str(), "^")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
-                val_stack.push(pow(b, a));
+                val_stack.push(pow(b, a)*sign);
             }   
             else if (!strcmp(comm.c_str(), "sqrt")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
-                val_stack.push(sqrt(a));
+                val_stack.push(sqrt(a)*sign);
             }   
             else if (!strcmp(comm.c_str(), "ln")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
-                val_stack.push(log(a));
+                val_stack.push(log(a)*sign);
             }   
-
-            else if (!strcmp(comm.c_str(), "sum")) {
-                a = 0;
-                while (!val_stack.empty()) {
-                    a += val_stack.top();val_stack.pop();
-                }
-                val_stack.push(a);
-            }
 
             else if (!strcmp(comm.c_str(), "sin")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
-                val_stack.push(sin(a));
+                val_stack.push(sin(a)*sign);
             }
             else if (!strcmp(comm.c_str(), "cos")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
-                val_stack.push(cos(a));
+                val_stack.push(cos(a)*sign);
             }
 
             else {
