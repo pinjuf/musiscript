@@ -93,6 +93,7 @@ std::string replace_unary_ops(std::string & in) {
 std::vector<std::string> split_infix(std::string in) { // Tokenizer, needs to be tested
     in = replace_all(in, " ", "");
     in = replace_unary_ops(in);
+    in = replace_all(in, "(-(", "(0-("); // This is a hack to make the parser work
 
     std::vector<std::string> out;
     std::string tmp;
