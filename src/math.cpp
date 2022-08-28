@@ -183,54 +183,70 @@ int rpn(std::string in, double * out) {
     double a, b;
     std::vector<std::string> input = split_string(in, ' ');
     int sign;
+    bool has_sign;
 
     for (std::string comm : input) {
+        has_sign = false;
         sign = 1;
-        if (comm[0] == '-') { // Hacky fix for tokens like -sin(...)
+        if (comm[0] == '-') { // Hacky fix for function tokens like -sin(...)
             sign = -1;
-            comm = comm.substr(1);
+            has_sign = true;
+        } else if (comm[0] == '+') {
+            sign = 1;
+            has_sign = true;
         }
+
         try {
             val_stack.push(stod(comm, NULL));
         } catch (std::invalid_argument const&) {
+            // Operators
             if (!strcmp(comm.c_str(), "+")) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(a+b);
+                continue;
             }   
-            else if (!strcmp(comm.c_str(), "*")) {
+            if (!strcmp(comm.c_str(), "*")) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(a*b);
+                continue;
             }   
-            else if (!strcmp(comm.c_str(), "-")) {
-                if (val_stack.size() > 1) {
-                    a = val_stack.top();val_stack.pop();
-                    b = val_stack.top();val_stack.pop();
-                    val_stack.push(b-a);
-                } else if (val_stack.size() == 1) {
-                    a = val_stack.top();val_stack.pop();
-                    val_stack.push(-a);
-                } else {
-                    return -1;
-                }
+            if (!strcmp(comm.c_str(), "-")) {
+                if (val_stack.size() < 2) {return -1;}
+                a = val_stack.top();val_stack.pop();
+                b = val_stack.top();val_stack.pop();
+                val_stack.push(b-a);
+                continue;
             }   
-            else if (!strcmp(comm.c_str(), "/")) {
+            if (!strcmp(comm.c_str(), "/")) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(b/a);
+                continue;
             }
-            else if (!strcmp(comm.c_str(), "mod")) {
+            if (!strcmp(comm.c_str(), "^")) {
+                if (val_stack.size() < 2) {return -1;}
+                a = val_stack.top();val_stack.pop();
+                b = val_stack.top();val_stack.pop();
+                val_stack.push(pow(b, a));
+                continue;
+            }
+
+            // Functions
+            if (sign == -1 && has_sign)
+                comm = comm.substr(1);
+            if (!strcmp(comm.c_str(), "mod")) {
                 if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(fmod(b,a)*sign);
             }
 
-            else if (!strcmp(comm.c_str(), "pow") || !strcmp(comm.c_str(), "^")) {
+            else if (!strcmp(comm.c_str(), "pow")) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
@@ -256,6 +272,11 @@ int rpn(std::string in, double * out) {
                 if (val_stack.size() < 1) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 val_stack.push(cos(a)*sign);
+            }
+            else if (!strcmp(comm.c_str(), "tan")) {
+                if (val_stack.size() < 1) {return -1;}
+                a = val_stack.top();val_stack.pop();
+                val_stack.push(tan(a)*sign);
             }
 
             else {

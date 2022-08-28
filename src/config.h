@@ -8,7 +8,7 @@
 
 // Logging stuff
 #define DEF_LOG_LEVEL LOG_INFO
-#define DO_LOGLINENUMBER true
+#define DO_LOGLINENUMBER false // Settings to true will STRONGLY slow down the program
 #define DO_COLOR_LOG true
 
 // RNG stuff, set to true to always have the same seed
