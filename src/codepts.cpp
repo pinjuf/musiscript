@@ -158,6 +158,10 @@ int eval_codepointer(std::string input, std::string * output, Voice & vc) {
         *output = dtostr((float)vc.counter / SAMPLING_RATE);
     }
 
+    else if (!strcmp(tokens[0].c_str(), "currbeat")) {
+        *output = dtostr(vc.speed * (float)vc.counter / SAMPLING_RATE);
+    }
+
     else if (!strcmp(tokens[0].c_str(), "samplingrate")) {
         *output = dtostr(SAMPLING_RATE);
     }

@@ -500,6 +500,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
 
             // do 'getlines' until an 'endsub' is found
             int depth_counter = 1;
+            bool found = false;
             std::string temp_line;
             while (getline(file, temp_line)) {
                 std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
@@ -509,8 +510,15 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     else if (!strcmp(temp_tokens[0].c_str(), "sub"))
                         depth_counter++;
                 }
-                if (depth_counter == 0)
+                if (depth_counter == 0) {
+                    found = true;
                     break;
+                }
+            }
+
+            if (!found) {
+                log(LOG_ERROR, "Reached EOF while reading 'sub' definition", true);
+                continue;
             }
         }
 
@@ -785,6 +793,13 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
         else {
             log(LOG_WARNING, ("Unknown command: " + tokens[0]).c_str(), true);
         }
+    }
+
+    if (!ifs.empty()) {
+        log(LOG_ERROR, "Reached EOF while reading 'if'", false);
+    }
+    if (!reps.empty()) {
+        log(LOG_ERROR, "Reached EOF while reading 'rep'", false);
     }
 
     for (size_t i = 0; i < effects.size(); i++)
