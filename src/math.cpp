@@ -237,7 +237,7 @@ int rpn(std::string in, double * out) {
             }
 
             // Functions
-            if (sign == -1 && has_sign)
+            if (has_sign)
                 comm = comm.substr(1);
             if (!strcmp(comm.c_str(), "mod")) {
                 if (val_stack.size() < 2) {return -1;}
