@@ -64,6 +64,14 @@ void Effect::get_through_amp_effect(StereoSample * sample, size_t rel_sample_cou
 
             l = (double)l2/WavFile::def_amp;
             r = (double)r2/WavFile::def_amp;
+            break;
+        }
+        case AMP_SEPCUTOFF: {
+            l = fmax(l, settings[0]);
+            l = fmin(l, settings[1]);
+            r = fmax(r, settings[0]);
+            r = fmin(r, settings[1]);
+            break;
         }
         case NO_EFFECT:
         default:

@@ -11,6 +11,7 @@ enum EFFECTS {
     AMP_AD_ENVELOPE,
     AMP_A_ENVELOPE,
     AMP_BITCRUSHER,
+    AMP_SEPCUTOFF,
     I_VIBRATO,
     I_WAH,
     BUF_SMOOTH,
@@ -21,7 +22,7 @@ enum EFFECTS {
     EFF_CUSTOM3,
 };
 
-constexpr char EFFECTNAMES[15][32] {
+constexpr char EFFECTNAMES[16][32] {
     "NONE",
     "CUTOFF",
     "POW",
@@ -29,6 +30,7 @@ constexpr char EFFECTNAMES[15][32] {
     "AD_ENVELOPE",
     "A_ENVELOPE",
     "BITCRUSHER",
+    "SEPCUTOFF",
     "VIBRATO",
     "WAH",
     "SMOOTH",
