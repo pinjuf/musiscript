@@ -10,7 +10,7 @@ void WavFile::fill_fmtvalues() {
 }
 
 void WavFile::fill_sizevalues() {
-    wavheader.Subchunk2Size = 4 + samples.size() * wavheader.BlockAlign;
+    wavheader.Subchunk2Size = samples.size() * wavheader.BlockAlign;
     wavheader.ChunkSize = 36 + wavheader.Subchunk2Size;
 }
 
