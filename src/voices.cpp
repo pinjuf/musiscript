@@ -389,11 +389,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     stereosample.r += get_sound_at_wavready(baked_i, baked_freq, (SOUNDS)sound) * pan / freqs.size();
                 }
 
-                for (size_t j = 0; j < effects.size(); j++)
-                     effects[j].get_through_amp_effect(&stereosample, i, counter);
-
                 stereosample.l *= volume;
                 stereosample.r *= volume;
+
+                for (size_t j = 0; j < effects.size(); j++)
+                     effects[j].get_through_amp_effect(&stereosample, i, counter);
 
                 samples.push_back(stereosample);
 
