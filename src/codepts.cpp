@@ -193,5 +193,21 @@ int eval_codepointer(std::string input, std::string * output, Voice & vc) {
         *output = dtostr(out);
     }
 
+    else if (!strcmp(tokens[0].c_str(), "currpan")) {
+        *output = dtostr(vc.pan);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "currvolume")) {
+        *output = dtostr(vc.volume);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "currspeed")) {
+        *output = dtostr(vc.speed);
+    }
+
+    else if (!strcmp(tokens[0].c_str(), "currtranspose")) {
+        *output = dtostr(vc.transpose);
+    }
+
     return 0;
 }
