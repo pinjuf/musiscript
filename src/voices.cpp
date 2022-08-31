@@ -61,6 +61,9 @@ std::string Voice::replace_infix_codepts_with_vals(std::string line) {
             next_closing = line.find('}', 0);
         }
 
+        if (next_closing == std::string::npos)
+            break;
+
         // Get the last opening brace before the closing brace, rfind isn't working because i am to lazy
         size_t matching_opening = std::string::npos;
         for (size_t j = 0; j < next_closing; j++) {
