@@ -125,7 +125,7 @@ size_t Effect::get_through_i_effect(size_t i, size_t rel_sample_count, size_t ab
 void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
     // Here, the 'end'-check must be performed individually for each effect, as they all go through the whole buffer in their own way.
     switch (effect) {
-        case BUF_SMOOTH: {
+        case BUF_SMOOTH: { // Basically a low-pass filter, higher setting = lower cutoff
             std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
             for (size_t i = 0; i < buffer->size(); i++) {
                 tempbuffer->push_back(buffer->at(i));
@@ -145,6 +145,29 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 }
                 buffer->at(i).l = l/(settings[0]*2+1);
                 buffer->at(i).r = r/(settings[0]*2+1);
+            }
+            break;
+        }
+        case BUF_ANTISMOOTH: { // Basically a high-pass filter, higher setting = lower cutoff
+            std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
+            for (size_t i = 0; i < buffer->size(); i++) {
+                tempbuffer->push_back(buffer->at(i));
+            }
+
+            for (size_t i = 0; i < buffer->size(); i++) {
+                if (start >= i || i >= end) {
+                    continue;
+                }
+                int64_t l = 0;
+                int64_t r = 0;
+                for (int j = -settings[0]; j <= settings[0]; j++) {
+                    if (i+j < buffer->size() && ((int)i+j) >= 0) {
+                        l += tempbuffer->at(i+j).l;
+                        r += tempbuffer->at(i+j).r;
+                    }
+                }
+                buffer->at(i).l -= l/(settings[0]*2+1);
+                buffer->at(i).r -= r/(settings[0]*2+1);
             }
             break;
         }

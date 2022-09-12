@@ -15,6 +15,7 @@ enum EFFECTS {
     I_VIBRATO,
     I_WAH,
     BUF_SMOOTH,
+    BUF_ANTISMOOTH,
     BUF_ECHO,
     EFF_CUSTOM0,
     EFF_CUSTOM1,
@@ -22,7 +23,7 @@ enum EFFECTS {
     EFF_CUSTOM3,
 };
 
-constexpr char EFFECTNAMES[16][32] {
+constexpr char EFFECTNAMES[17][32] {
     "NONE",
     "CUTOFF",
     "POW",
@@ -34,6 +35,7 @@ constexpr char EFFECTNAMES[16][32] {
     "VIBRATO",
     "WAH",
     "SMOOTH",
+    "ANTISMOOTH",
     "ECHO",
     "CUSTOM0",
     "CUSTOM1",
