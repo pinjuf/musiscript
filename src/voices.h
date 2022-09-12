@@ -16,6 +16,8 @@ class Voice {
     public:
         void voice_from_file(char * path);
 
+        void preprocess_file(char * path, char * out_path);
+
         double pan    = 0.5;
         double volume = 1;
         double speed  = 1;

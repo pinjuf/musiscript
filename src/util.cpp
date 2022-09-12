@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <iomanip>
+#include <fstream> 
 
 std::vector<std::string> split_string(std::string str, char delimiter) {
     std::vector<std::string> internal;
@@ -36,3 +37,21 @@ std::string strip_line(std::string str) {
     str.erase(str.find_last_not_of(" \n\r\t") + 1);
     return str;
 }
+
+size_t get_current_line(std::ifstream& file) {
+    size_t current_pos = file.tellg();
+    size_t original_pos = current_pos;
+    size_t line_count = 0;
+    while(current_pos > 0) {
+        current_pos--;
+        file.seekg(current_pos);
+        if (file.peek() == '\n') {
+            line_count++;
+        }
+    }
+
+    file.seekg(original_pos);
+
+    return line_count;
+}
+

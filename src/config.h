@@ -4,6 +4,7 @@
 // Files
 #define OUTFILE "out.wav"
 #define VOICE_SUFFIX ".msc"
+#define PREPROCESSED_VOICE_SUFFIX ".mscpp"
 #define DATA_DIR "data"
 
 // Logging stuff

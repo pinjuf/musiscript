@@ -17,23 +17,6 @@
 #include "util.h"
 #include "config.h"
 
-size_t get_current_line(std::ifstream& file) {
-    size_t current_pos = file.tellg();
-    size_t original_pos = current_pos;
-    size_t line_count = 0;
-    while(current_pos > 0) {
-        current_pos--;
-        file.seekg(current_pos);
-        if (file.peek() == '\n') {
-            line_count++;
-        }
-    }
-
-    file.seekg(original_pos);
-
-    return line_count;
-}
-
 std::string Voice::replace_defs_with_vals(std::string line) {
     for (auto const & x : defs) { // Replace all defined variables
         line = replace_all(line, x.first, x.second);
@@ -816,4 +799,68 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
             outsamples->push_back(samples[i]);
         }
     }
+}
+
+void Voice::preprocess_file(char * path, char * outpath) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        log(LOG_FATAL, "Failed to open voice file for preprocessing", false);
+        return;
+    }
+
+    std::ofstream outfile(outpath);
+    if (!outfile.is_open()) {
+        log(LOG_FATAL, "Failed to open output file for preprocessing", false);
+        return;
+    }
+
+    std::string line;
+    std::vector<std::string> tokens;
+    while (getline(file, line)) {
+        line = strip_line(line);
+
+        if (line.empty()) {
+            outfile << line << std::endl;
+            continue;
+        }
+        if (!(line.find("%") == 0)) {
+            outfile << line << std::endl;
+            continue;
+        }
+
+        line.erase(0, 1); // Remove the "%"
+        
+        tokens = split_string(line, ' ');
+
+        if (tokens.empty()) {
+            outfile << line << std::endl;
+            continue;
+        }
+
+        if (!strcmp(tokens[0].c_str(), "include")) {
+            if (tokens.size() < 2) {
+                log(LOG_ERROR, "(PP) Not enough arguments (include)");
+                continue;
+            }
+
+            preprocess_file((char*)((std::string)DATA_DIR"/"+tokens[1]).c_str(), (char*)((std::string)DATA_DIR"/"+tokens[1]+PREPROCESSED_VOICE_SUFFIX).c_str());
+
+            std::ifstream incfile((char*)((std::string)DATA_DIR"/"+tokens[1]+PREPROCESSED_VOICE_SUFFIX).c_str());
+            if (!incfile.is_open()) {
+                log(LOG_ERROR, "(PP) Failed to open included file (after preprocessing)");
+                continue;
+            }
+
+            std::string inc_line;
+            while (getline(incfile, inc_line)) {
+                outfile << inc_line << std::endl;
+            }
+        }
+
+        else
+            outfile << line << std::endl;
+    }
+
+    file.close();
+    outfile.close();
 }
