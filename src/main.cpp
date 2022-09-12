@@ -41,5 +41,23 @@ int main() {
     wavfile.write((char*)DATA_DIR "/" OUTFILE);
     log(LOG_INFO, "Final .wav file ready at " DATA_DIR "/" OUTFILE);
 
+#if DELETE_PREPROCESSED_VOICES
+    log(LOG_INFO, "Deleting preprocessed voice files");
+
+    try {
+        voice_files = std::filesystem::directory_iterator(DATA_DIR);
+    } catch (std::filesystem::filesystem_error & e) {
+        log(LOG_FATAL, "Failed to open data directory");
+        return 1;
+    }
+
+    for (auto& file : voice_files) {
+        if (file.path().extension() == PREPROCESSED_VOICE_SUFFIX) {
+            std::filesystem::remove(file.path());
+        }
+    }
+    log(LOG_INFO, "Done deleting preprocessed voice files");
+#endif
+
     return 0;
 }

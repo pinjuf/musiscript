@@ -6,6 +6,7 @@
 #define VOICE_SUFFIX ".msc"
 #define PREPROCESSED_VOICE_SUFFIX ".mscpp"
 #define DATA_DIR "data"
+#define DELETE_PREPROCESSED_VOICES true
 
 // Logging stuff
 #define DEF_LOG_LEVEL LOG_INFO
