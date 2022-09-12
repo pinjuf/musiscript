@@ -132,7 +132,7 @@ This will echo `true` if `$counter == $thres`, else it will output `false`.
 Musiscript has a preprocessor that allows you to include macros in your files.
 Before reading any file, Musiscript preprocesses it.
 The final product it actually parses will have the suffix `.mscpp`.
-They may be deleted, depending on your `src/config.h
+They may be deleted, depending on your `src/config.h`.
 
 ### `%include <filename>`
 
