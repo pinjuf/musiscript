@@ -6,8 +6,9 @@ A musical scripting language.
 
 1) Compile the program by issuing `make`
 2) Write your music scripts and store them in `data` with the extension `*.msc` ("voice")
-3) Execute `musiscript`
-4) The output file can be found at `data/out.wav`
+> Note that if you are using the proprocessor, make sure your macro files DON'T end with `.msc` or they will be played as an individual voice as well. The convention is to call these files `.mscm`.
+4) Execute `musiscript`
+5) The output file can be found at `data/out.wav`
 
 ## The syntax
 
@@ -125,3 +126,15 @@ echo {numeq $counter $thres}
 ```
 
 This will echo `true` if `$counter == $thres`, else it will output `false`.
+
+## The preprocessor
+
+Musiscript has a preprocessor that allows you to include macros in your files.
+Before reading any file, Musiscript preprocesses it.
+The final product it actually parses will have the suffix `.mscpp`.
+They may be deleted, depending on your `src/config.h
+
+### `%include <filename>`
+
+This allows you to include a complete file.
+Note that said file will be proprocessed too, regardless of its suffix.
