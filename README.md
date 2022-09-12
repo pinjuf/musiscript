@@ -43,6 +43,10 @@ the duration can either be 1 value or 2 (separated by a `,`), where the first di
 - `echo <text>`: Log a text, useful for debugging
 - `jump <label>`: immediatly jump the the specified `label`
 - `label <title>`: sets a label, see above
+- `if <statement>`: see below
+- `elif <statement>`: see below
+- `else`: see below
+-  `endif`: ends an `if
 - `#<comment>`: a comment, ignored by parsing
 
 ### Pitches
@@ -127,12 +131,34 @@ echo {numeq $counter $thres}
 
 This will echo `true` if `$counter == $thres`, else it will output `false`.
 
+### `if`-statements/blocks
+
+`if`-statements engage if the following statement evaluates to true. For the evaulation, you can use codepointers in combination with `or`, `and`, `not` etc and parentheses.
+
+`elif`-statements engage if all previous evaluations in the current `if`-block have evaluated to false and the following statement evaluates to true.
+
+`else`-statements engage if all previous evaluations evaluated to `false`.
+
+`endif` ends an `if`-block.
+
+Example:
+
+```
+def value {randint 0 16}
+
+if {numeq 0 [mod($value, 2)]}
+    echo $value is even.
+else
+    echo $value is uneven.
+endif
+```
+
 ## The preprocessor
 
 Musiscript has a preprocessor that allows you to include macros in your files.
 Before reading any file, Musiscript preprocesses it.
 The final product it actually parses will have the suffix `.mscpp`.
-They may be deleted, depending on your `src/config.h
+They may be deleted, depending on your `src/config.h`.
 
 ### `%include <filename>`
 
