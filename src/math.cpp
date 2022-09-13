@@ -37,7 +37,7 @@ void ifft(double * in, double * out, int n, int sign) {
     }
 }
 
-int get_op_priority(std::string op) {
+int get_op_priority(const std::string & op) {
     if (op == "+" || op == "-")
         return 1;
     else if (op == "*" || op == "/")
@@ -178,7 +178,7 @@ std::vector<std::string> split_infix_logical(std::string in) { // Tokenizer for 
     return out;
 }
 
-int rpn(std::string in, double * out) {
+int rpn(const std::string & in, double * out) {
     std::stack<double> val_stack;
     double a, b;
     std::vector<std::string> input = split_string(in, ' ');
@@ -364,7 +364,7 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
     return 0;
 }
 
-bool is_left_associated(std::string op) {
+bool is_left_associated(const std::string & op) {
     if (op == "^")
         return false;
     else if (op == "+" || op == "-")
@@ -516,7 +516,7 @@ int shunting_yard_logical(std::vector<std::string> in, std::vector<std::string> 
     return 0;
 }
 
-int eval_infix(std::string in, double * out) {
+int eval_infix(const std::string & in, double * out) {
     // First, convert input to postfix notation, then pass to RPN
     std::vector<std::string> tokens = split_infix(in);
     std::vector<std::string> postfix;
