@@ -384,7 +384,7 @@ int shunting_yard(std::vector<std::string> in, std::vector<std::string> &out) {
 
     for (std::string curr : in) {
         try { // Scenario 1: Number
-            stod(curr, NULL);
+            (void)stod(curr, NULL);
             out.push_back(curr);
             continue;
         } catch (std::invalid_argument const&) {}
