@@ -516,7 +516,7 @@ int shunting_yard_logical(std::vector<std::string> in, std::vector<std::string> 
     return 0;
 }
 
-int eval_infix(const std::string & in, double * out) {
+int eval_infix(const std::string in, double * out) {
     // First, convert input to postfix notation, then pass to RPN
     std::vector<std::string> tokens = split_infix(in);
     std::vector<std::string> postfix;
