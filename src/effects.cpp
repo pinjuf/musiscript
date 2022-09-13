@@ -88,11 +88,11 @@ double Effect::get_through_freq_effect(double freq, size_t rel_sample_count, siz
     }
 
     double timeinto = ((double) rel_sample_count)/SAMPLING_RATE;
+    (void)timeinto;
 
     switch (effect) {
         case NO_EFFECT:
         default:
-            timeinto = timeinto; // Just to make the compiler happy, fuck you @Miezekatze64
             break;
     }
 
@@ -112,7 +112,7 @@ size_t Effect::get_through_i_effect(size_t i, size_t rel_sample_count, size_t ab
         }
         case I_WAH: {
             double timeinto = ((double) rel_sample_count)/SAMPLING_RATE;
-            i = (timeinto*settings[0]-log(timeinto*settings[0]+1))*SAMPLING_RATE/settings[0];
+            i = (timeinto*settings[0]-log1p(timeinto*settings[0]))*SAMPLING_RATE/settings[0];
         }
         case NO_EFFECT:
         default:

@@ -98,7 +98,7 @@ std::string Voice::remove_comments(std::string line) {
     return line;
 }
 
-void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsamples) {
+void Voice::read_from_file(const char * filename, std::vector<StereoSample> * outsamples) {
     std::ifstream file(filename);
     std::string line;
     std::vector<std::string> tokens;
@@ -335,7 +335,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                     }
 
                 } else {
-                    double freq = get_freq_by_name((char*)note_tokens[i].c_str(), transpose);
+                    double freq = get_freq_by_name(note_tokens[i].c_str(), transpose);
                     if (freq >= 0) {
                         freqs.push_back(freq);
                     } else {
@@ -590,13 +590,11 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
                 log(LOG_WARNING, "Ignored extra arguments (jump)", true);
             }
 
-            std::streampos currpos = file.tellg();
             file.seekg(0);
             std::string temp_line;
-            std::vector<std::string> temp_tokens;
             bool found = false;
             while (getline(file, temp_line)) {
-                temp_tokens = split_string(temp_line, ' ');
+                std::vector<std::string> temp_tokens = split_string(temp_line, ' ');
                 if (temp_tokens.size() < 2)
                     continue;
                 if (!strcmp(temp_tokens[0].c_str(), "label") && !strcmp(temp_tokens[1].c_str(), tokens[1].c_str())) {
@@ -801,7 +799,7 @@ void Voice::read_from_file(char * filename, std::vector<StereoSample> * outsampl
     }
 }
 
-void Voice::preprocess_file(char * path, char * outpath) {
+void Voice::preprocess_file(const char * path, const char * outpath) {
     std::ifstream file(path);
     if (!file.is_open()) {
         log(LOG_FATAL, "Failed to open voice file for preprocessing", false);
@@ -843,9 +841,9 @@ void Voice::preprocess_file(char * path, char * outpath) {
                 continue;
             }
 
-            preprocess_file((char*)((std::string)DATA_DIR"/"+tokens[1]).c_str(), (char*)((std::string)DATA_DIR"/"+tokens[1]+PREPROCESSED_VOICE_SUFFIX).c_str());
+            preprocess_file(((std::string)DATA_DIR"/"+tokens[1]).c_str(), ((std::string)DATA_DIR"/"+tokens[1]+PREPROCESSED_VOICE_SUFFIX).c_str());
 
-            std::ifstream incfile((char*)((std::string)DATA_DIR"/"+tokens[1]+PREPROCESSED_VOICE_SUFFIX).c_str());
+            std::ifstream incfile(((std::string)DATA_DIR"/"+tokens[1]+PREPROCESSED_VOICE_SUFFIX).c_str());
             if (!incfile.is_open()) {
                 log(LOG_ERROR, "(PP) Failed to open included file (after preprocessing)");
                 continue;

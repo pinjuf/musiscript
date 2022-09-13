@@ -6,7 +6,7 @@
 
 #include "notes.h"
 
-double get_freq_by_name(char * name, int transpose) {
+double get_freq_by_name(const char * name, int transpose) {
     double out;
 
     char base = name[0];

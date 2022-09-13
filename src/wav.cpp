@@ -14,7 +14,7 @@ void WavFile::fill_sizevalues() {
     wavheader.ChunkSize = 36 + wavheader.Subchunk2Size;
 }
 
-void WavFile::write(char * filename) {
+void WavFile::write(const char * filename) {
     std::ofstream outfile(filename, std::ios::binary);
 
     if (!outfile.is_open()) {

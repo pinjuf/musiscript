@@ -14,9 +14,7 @@
 
 class Voice {
     public:
-        void voice_from_file(char * path);
-
-        void preprocess_file(char * path, char * out_path);
+        void preprocess_file(const char * path, const char * out_path);
 
         double pan    = 0.5;
         double volume = 1;
@@ -24,7 +22,7 @@ class Voice {
         int transpose = 0;
         int sound     = SILENCE;
 
-        void read_from_file(char * filename, std::vector<StereoSample> * outsamples);
+        void read_from_file(const char * filename, std::vector<StereoSample> * outsamples);
 
         size_t counter = 0;
 

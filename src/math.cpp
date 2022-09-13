@@ -7,7 +7,7 @@
 #include "math.h"
 #include "util.h"
 
-void fft(double * in, double * out, int n, int sign) {
+void fft(const double * in, double * out, int n, int sign) {
     if (n == 1) {
         out[0] = in[0];
         return;
@@ -182,12 +182,10 @@ int rpn(std::string in, double * out) {
     std::stack<double> val_stack;
     double a, b;
     std::vector<std::string> input = split_string(in, ' ');
-    int sign;
-    bool has_sign;
 
     for (std::string comm : input) {
-        has_sign = false;
-        sign = 1;
+        bool has_sign = false;
+        int sign = 1;
         if (comm[0] == '-') { // Hacky fix for function tokens like -sin(...)
             sign = -1;
             has_sign = true;
@@ -247,7 +245,7 @@ int rpn(std::string in, double * out) {
             }
 
             else if (!strcmp(comm.c_str(), "pow")) {
-                if (val_stack.size() < 1) {return -1;}
+                if (val_stack.size() < 2) {return -1;}
                 a = val_stack.top();val_stack.pop();
                 b = val_stack.top();val_stack.pop();
                 val_stack.push(pow(b, a)*sign);
@@ -312,7 +310,7 @@ int lrpn(std::string in, bool * out) { // Logical RPN, essentially a RPN with bo
             val_stack.push(false);
         else if (!strcmp(comm.c_str(), "not")) {
             if (val_stack.size() < 1) {return -1;}
-            bool a = val_stack.top();val_stack.pop();
+            a = val_stack.top();val_stack.pop();
             a =! a;
             val_stack.push(a);
         }

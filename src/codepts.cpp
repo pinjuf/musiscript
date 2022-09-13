@@ -187,7 +187,7 @@ int eval_codepointer(std::string input, std::string * output, Voice & vc) {
         if (tokens.size() != 2)
             return -1;
 
-        double out = get_freq_by_name((char*)tokens[1].c_str(), vc.transpose);
+        double out = get_freq_by_name(tokens[1].c_str(), vc.transpose);
         if (out == -1)
             return -1;
         *output = dtostr(out);

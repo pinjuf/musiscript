@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-void fft(double * in, double * out, int n, int sign);
+void fft(const double * in, double * out, int n, int sign);
 void ifft(double * in, double * out, int n, int sign);
 
 int rpn(std::string in, double * out);

@@ -40,6 +40,6 @@ class WavFile {
 
         void fill_fmtvalues();
         void fill_sizevalues();
-        void write(char * filename);
+        void write(const char * filename);
 };
 #endif
