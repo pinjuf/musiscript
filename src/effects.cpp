@@ -1,7 +1,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
-#include <complex.h>
+#include <complex>
 
 #include "effects.h"
 #include "wav.h"
@@ -149,6 +149,7 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 buffer->at(i).l = l/(settings[0]*2+1);
                 buffer->at(i).r = r/(settings[0]*2+1);
             }
+            delete tempbuffer;
             break;
         }
         case BUF_ANTISMOOTH: { // Basically a high-pass filter, higher setting = lower cutoff
@@ -172,6 +173,7 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 buffer->at(i).l -= l/(settings[0]*2+1);
                 buffer->at(i).r -= r/(settings[0]*2+1);
             }
+            delete tempbuffer;
             break;
         }
         case BUF_ECHO: {
@@ -190,7 +192,7 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
 
             // Loop through the buffer in chunks of FOURIER_SIZE samples
             for (size_t i = start; i < buffer->size(); i += FOURIER_SIZE) {
-                if (start >= i || i >= end) {
+                if (start > i || i >= end) {
                     continue;
                 }
 
@@ -201,10 +203,47 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 }
 
                 // Create a temporary buffer for the fourier transform
-                std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
+                std::vector<double> * tempbuffer_l = new std::vector<double>();
+                std::vector<double> * tempbuffer_r = new std::vector<double>();
                 for (size_t j = i; j < endi; j++) {
-                    tempbuffer->push_back(buffer->at(j));
+                    tempbuffer_l->push_back(buffer->at(j).l);
+                    tempbuffer_r->push_back(buffer->at(j).r);
                 }
+
+                // Perform the fourier transform
+                std::vector<std::complex<double>> * fourier = new std::vector<std::complex<double>>();
+                fourier->clear();
+                fourier->resize(FOURIER_SIZE);
+                fft(tempbuffer_l, fourier);
+
+                // Now, put do the ifft on the fourier transform
+                std::vector<double> * ifourier = new std::vector<double>();
+                ifourier->clear();
+                ifourier->resize(FOURIER_SIZE);
+                ifft(fourier, ifourier);
+
+                // And put the result back into the buffer
+                for (size_t j = i; j < endi; j++) {
+                    buffer->at(j).l = ifourier->at(j-i);
+                }
+
+                // Do the same for the right channel
+                fourier->clear();
+                fourier->resize(FOURIER_SIZE);
+                fft(tempbuffer_r, fourier);
+
+                ifourier->clear();
+                ifourier->resize(FOURIER_SIZE);
+                ifft(fourier, ifourier);
+
+                for (size_t j = i; j < endi; j++) {
+                    buffer->at(j).r = ifourier->at(j-i);
+                }
+
+                delete tempbuffer_l;
+                delete tempbuffer_r;
+                delete fourier;
+                delete ifourier;
             }
 
             break;

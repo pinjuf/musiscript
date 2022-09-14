@@ -5,9 +5,10 @@
 
 #include <vector>
 #include <string>
+#include <complex>
 
-void fft(const double * in, double * out, int n, int sign);
-void ifft(double * in, double * out, int n, int sign);
+void fft(std::vector<double> * in, std::vector<std::complex<double>> * out);
+void ifft(std::vector<std::complex<double>> * in, std::vector<double> * out);
 
 int rpn(const std::string & in, double * out);
 int lrpn(std::string in, bool * out);

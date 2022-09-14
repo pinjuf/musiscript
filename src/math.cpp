@@ -3,37 +3,56 @@
 #include <stack>
 #include <string.h>
 #include <sstream>
+#include <complex>
 
 #include "math.h"
 #include "util.h"
 
-void fft(const double * in, double * out, int n, int sign) {
+void fft(std::vector<double> * in, std::vector<std::complex<double>> * out) {
+    size_t n = in->size();
     if (n == 1) {
-        out[0] = in[0];
+        out->push_back(std::complex<double>(in->at(0), 0));
         return;
     }
-    double * even = new double[n / 2];
-    double * odd = new double[n / 2];
-    for (int i = 0; i < n / 2; i++) {
-        even[i] = in[2 * i];
-        odd[i] = in[2 * i + 1];
+    std::vector<double> even, odd;
+    for (size_t i = 0; i < n; i++) {
+        if (i % 2 == 0) {
+            even.push_back(in->at(i));
+        } else {
+            odd.push_back(in->at(i));
+        }
     }
-    fft(even, out, n / 2, sign);
-    fft(odd, out + n / 2, n / 2, sign);
-    for (int i = 0; i < n / 2; i++) {
-        double t = out[i + n / 2];
-        double w = exp(-sign * 2 * M_PI * i / n);
-        out[i + n / 2] = out[i] - w * t;
-        out[i] += w * t;
+    std::vector<std::complex<double>> even_fft, odd_fft;
+    fft(&even, &even_fft);
+    fft(&odd, &odd_fft);
+    for (size_t i = 0; i < n / 2; i++) {
+        std::complex<double> t = std::polar(1.0, -2 * M_PI * i / n) * odd_fft[i];
+        out->push_back(even_fft[i] + t);
+        out->push_back(even_fft[i] - t);
     }
-    delete[] even;
-    delete[] odd;
 }
 
-void ifft(double * in, double * out, int n, int sign) {
-    fft(in, out, n, -sign);
-    for (int i = 0; i < n; i++) {
-        out[i] /= n;
+void ifft(std::vector<std::complex<double>> * in, std::vector<double> * out) {
+    size_t n = in->size();
+    if (n == 1) {
+        out->push_back(in->at(0).real());
+        return;
+    }
+    std::vector<std::complex<double>> even, odd;
+    for (size_t i = 0; i < n; i++) {
+        if (i % 2 == 0) {
+            even.push_back(in->at(i));
+        } else {
+            odd.push_back(in->at(i));
+        }
+    }
+    std::vector<double> even_ifft, odd_ifft;
+    ifft(&even, &even_ifft);
+    ifft(&odd, &odd_ifft);
+    for (size_t i = 0; i < n / 2; i++) {
+        std::complex<double> t = std::polar(1.0, 2 * M_PI * i / n) * odd_ifft[i];
+        out->push_back((even_ifft[i] + t).real() / n);
+        out->push_back((even_ifft[i] - t).real() / n);
     }
 }
 
