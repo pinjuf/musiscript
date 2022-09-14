@@ -96,8 +96,11 @@ std::vector<std::string> split_infix(std::string in) { // Tokenizer, needs to be
     in = replace_unary_ops(in);
     in = replace_all(in, "(-(", "(0-("); // This is a hack to make the parser work
     in = replace_all(in, "(+(", "(0+(");
-    // TODO: Check for the following patters: ^[+-][a-Z](  | Example: -sin({pi}/4)
-    //                                        ([+-][a-Z](  | Example: 1+(-sin({pi}/4))
+
+    if (in[0] == '-')
+        in = "0" + in;
+    if (in[0] == '+')
+        in = "0" + in;
 
     std::vector<std::string> out;
     std::string tmp;

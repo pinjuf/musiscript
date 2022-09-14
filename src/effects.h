@@ -17,13 +17,14 @@ enum EFFECTS {
     BUF_SMOOTH,
     BUF_ANTISMOOTH,
     BUF_ECHO,
+    BUF_10BEQ,
     EFF_CUSTOM0,
     EFF_CUSTOM1,
     EFF_CUSTOM2,
     EFF_CUSTOM3,
 };
 
-constexpr char EFFECTNAMES[17][32] {
+constexpr char EFFECTNAMES[18][32] {
     "NONE",
     "CUTOFF",
     "POW",
@@ -37,6 +38,7 @@ constexpr char EFFECTNAMES[17][32] {
     "SMOOTH",
     "ANTISMOOTH",
     "ECHO",
+    "10BEQ",
     "CUSTOM0",
     "CUSTOM1",
     "CUSTOM2",

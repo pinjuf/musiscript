@@ -19,5 +19,7 @@
 // Number to string precision
 #define DIGIT_PREC 32
 
+// Advanced stuff
+#define FOURIER_SIZE (44100/10) // Lowest frequency is 10Hz
 
 #endif

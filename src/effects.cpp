@@ -1,9 +1,12 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <complex.h>
 
 #include "effects.h"
 #include "wav.h"
+#include "config.h"
+#include "math.h"
 
 void Effect::get_through_amp_effect(StereoSample * sample, size_t rel_sample_count, size_t abs_sample_count) {
     // Explanation of the two sample counts:
@@ -180,6 +183,30 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 buffer->at(i).l += buffer->at(i-delay).l*settings[1];
                 buffer->at(i).r += buffer->at(i-delay).r*settings[1];
             }
+            break;
+        }
+        case BUF_10BEQ: { // 10 Band Equalizer
+            // Don't sleep deprive and code, kids.
+
+            // Loop through the buffer in chunks of FOURIER_SIZE samples
+            for (size_t i = start; i < buffer->size(); i += FOURIER_SIZE) {
+                if (start >= i || i >= end) {
+                    continue;
+                }
+
+                // If we're at the end of the buffer, we have to make sure that we don't go over the buffer size
+                size_t endi = i+FOURIER_SIZE;
+                if (endi > buffer->size()) {
+                    endi = buffer->size();
+                }
+
+                // Create a temporary buffer for the fourier transform
+                std::vector<StereoSample> * tempbuffer = new std::vector<StereoSample>();
+                for (size_t j = i; j < endi; j++) {
+                    tempbuffer->push_back(buffer->at(j));
+                }
+            }
+
             break;
         }
         case NO_EFFECT:
