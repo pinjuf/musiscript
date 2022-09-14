@@ -20,4 +20,6 @@ int shunting_yard_logical(std::vector<std::string> in, std::vector<std::string> 
 int eval_infix(std::string in, double * out);
 int eval_infix_logical(std::string in, bool * out);
 
+double get_at_in_band(double in, double * band, size_t band_size);
+
 #endif

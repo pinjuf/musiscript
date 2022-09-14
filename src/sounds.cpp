@@ -41,6 +41,9 @@ int16_t get_sound_at_wavready(double i, double freq, SOUNDS sound, double amp, d
             break;
         }
         case SND_CUSTOM2:
+            out = 4*floor(i)-2*floor(2*i)+1;
+            out += 4*std::abs(i-floor(i+3.0f/4)+1.0f/4)-1;
+            out /= 2;
             break;
         case SND_CUSTOM3:
             break;

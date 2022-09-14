@@ -549,3 +549,31 @@ int eval_infix_logical(std::string in, bool * out) {
 
     return 0;
 }
+
+double get_at_in_band(double x, double * band, size_t band_size) {
+    // Takes a list of values representing a band from 0 to 1, and returns the value at a point in the band, interpolating if necessary
+
+    if (band_size == 0) {
+        return 0;
+    } else if (band_size == 1) {
+        return band[0];
+    }
+
+    if (x < 0) {
+        return band[0];
+    } else if (x >= 1) {
+        return band[band_size-1];
+    }
+
+    double about_at = x * band_size;
+
+    size_t at_lower = (size_t)about_at; // Rounded down
+
+    size_t at_upper = at_lower + 1; // Rounded up
+
+    double frac = about_at - at_lower;
+
+    double out = band[at_lower]*(1-frac) + band[at_upper]*frac; // Interpolate
+
+    return out;
+}
