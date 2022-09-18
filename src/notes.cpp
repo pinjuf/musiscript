@@ -10,7 +10,7 @@ double get_freq_by_name(const char * name, double transpose) {
     double out;
 
     char base = name[0];
-    if (isupper(base)) base += 32; // Lowercae the base
+    if (isupper(base)) base += 32; // Lowercase the base
     
     size_t len = 0;
     for (;name[len];len++);
