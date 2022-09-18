@@ -209,5 +209,30 @@ int eval_codepointer(std::string input, std::string * output, Voice & vc) {
         *output = dtostr(vc.transpose);
     }
 
+    else if (!strcmp(tokens[0].c_str(), "chord")) {
+        if (tokens.size() != 3)
+            return -1;
+
+        std::vector<std::string> out_notes = {tokens[1].c_str()};
+
+        std::string base = tokens[1];
+
+        if (!strcmp(tokens[2].c_str(), "maj")) { // TODO: expand
+            out_notes.push_back(base + "++++");
+            out_notes.push_back(base + "+++++++");
+        } else if (!strcmp(tokens[2].c_str(), "min")) {
+            out_notes.push_back(base + "+++");
+            out_notes.push_back(base + "+++++++");
+        }
+
+        else
+            log(LOG_WARNING, "Unknown chord type", true);
+
+        *output = "";
+        for (std::string note : out_notes) {
+            *output += note + ",";
+        }
+    }
+
     return 0;
 }
