@@ -19,7 +19,7 @@ class Voice {
         double pan    = 0.5;
         double volume = 1;
         double speed  = 1;
-        int transpose = 0;
+        double transpose = 0;
         int sound     = SILENCE;
 
         void read_from_file(const char * filename, std::vector<StereoSample> * outsamples);

@@ -206,7 +206,7 @@ void Voice::read_from_file(const char * filename, std::vector<StereoSample> * ou
                 log(LOG_WARNING, "Ignored extra arguments (transpose)", true);
             }
             try {
-                transpose = std::stoi(tokens[1]);
+                transpose = std::stod(tokens[1]);
             } catch (std::invalid_argument const&) {
                 log(LOG_ERROR, "Invalid argument (transpose)", true);
             }
