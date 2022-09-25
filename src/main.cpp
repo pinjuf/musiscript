@@ -28,7 +28,7 @@ int main() {
     for (auto& file : voice_files) {
         if (file.path().extension() == VOICE_SUFFIX) {
             voice = new Voice();
-            log(LOG_INFO, "Preprossing voice file " + file.path().string());
+            log(LOG_INFO, "Preprocessing voice file " + file.path().string());
             voice->preprocess_file(file.path().string().c_str(), (file.path().string()+PREPROCESSED_VOICE_SUFFIX).c_str());
             log(LOG_INFO, ("Reading voice file " + file.path().string()+PREPROCESSED_VOICE_SUFFIX).c_str());
             voice->read_from_file((file.path().string()+PREPROCESSED_VOICE_SUFFIX).c_str(), &wavfile.samples);

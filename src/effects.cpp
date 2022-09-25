@@ -138,14 +138,25 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 if (start >= i || i >= end) {
                     continue;
                 }
-                int64_t l = 0;
-                int64_t r = 0;
-                for (int j = -settings[0]; j <= settings[0]; j++) {
+                double l = 0;
+                double r = 0;
+                for (int j = -(int)settings[0]; j <= (int)settings[0]; j++) {
                     if (i+j < buffer->size() && ((int)i+j) >= 0) {
                         l += tempbuffer->at(i+j).l;
                         r += tempbuffer->at(i+j).r;
                     }
                 }
+
+                double diff = settings[0] - floor(settings[0]);
+                if (i+settings[0]+1 < buffer->size()) {
+                    l += tempbuffer->at(i+settings[0]+1).l*diff;
+                    r += tempbuffer->at(i+settings[0]+1).r*diff;
+                }
+                if (i-settings[0]-1 >= 0) {
+                    l += tempbuffer->at(i-settings[0]-1).l*diff;
+                    r += tempbuffer->at(i-settings[0]-1).r*diff;
+                }
+
                 buffer->at(i).l = l/(settings[0]*2+1);
                 buffer->at(i).r = r/(settings[0]*2+1);
             }
@@ -162,14 +173,25 @@ void Effect::get_through_buffer_effect(std::vector<StereoSample> * buffer) {
                 if (start >= i || i >= end) {
                     continue;
                 }
-                int64_t l = 0;
-                int64_t r = 0;
+                double l = 0;
+                double r = 0;
                 for (int j = -settings[0]; j <= settings[0]; j++) {
                     if (i+j < buffer->size() && ((int)i+j) >= 0) {
                         l += tempbuffer->at(i+j).l;
                         r += tempbuffer->at(i+j).r;
                     }
                 }
+
+                double diff = settings[0] - floor(settings[0]);
+                if (i+settings[0]+1 < buffer->size()) {
+                    l += tempbuffer->at(i+settings[0]+1).l*diff;
+                    r += tempbuffer->at(i+settings[0]+1).r*diff;
+                }
+                if (i-settings[0]-1 >= 0) {
+                    l += tempbuffer->at(i-settings[0]-1).l*diff;
+                    r += tempbuffer->at(i-settings[0]-1).r*diff;
+                }
+
                 buffer->at(i).l -= l/(settings[0]*2+1);
                 buffer->at(i).r -= r/(settings[0]*2+1);
             }
