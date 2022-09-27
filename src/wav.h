@@ -5,8 +5,7 @@
 #include <vector>
 
 #include "logging.h"
-
-#define SAMPLING_RATE 44100
+#include "config.h"
 
 typedef struct StereoSample {
     int16_t l, r;
