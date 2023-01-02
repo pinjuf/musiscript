@@ -1,5 +1,4 @@
-#ifndef VOICES_H
-#define VOICES_H
+#pragma once
 
 #include <vector>
 #include <map>
@@ -43,5 +42,3 @@ class Voice {
         std::string replace_infix_codepts_with_vals(std::string line);
         std::string remove_comments(std::string line);
 };
-
-#endif

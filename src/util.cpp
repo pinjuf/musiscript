@@ -54,4 +54,3 @@ size_t get_current_line(std::ifstream& file) {
 
     return line_count;
 }
-

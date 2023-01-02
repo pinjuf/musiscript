@@ -1,5 +1,4 @@
-#ifndef WAV_H
-#define WAV_H
+#pragma once
 
 #include <cstdint>
 #include <vector>
@@ -41,4 +40,3 @@ class WavFile {
         void fill_sizevalues();
         void write(const char * filename);
 };
-#endif

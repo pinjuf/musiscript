@@ -1,5 +1,4 @@
-#ifndef EFFECTS_H
-#define EFFECTS_H
+#pragma once
 
 #include "wav.h"
 
@@ -56,5 +55,3 @@ class Effect {
         size_t start = 0, end = SIZE_MAX;
         static EFFECTS get_effect_by_name(const char * name);
 };
-
-#endif
