@@ -12,7 +12,7 @@ typedef struct StereoSample {
 
 class WavFile {
     public:
-        typedef struct WAVHEADER {
+        typedef struct wavheader_t {
             uint8_t RIFF[4]        = {'R', 'I', 'F', 'F'};
             uint32_t ChunkSize;
             uint8_t WAVE[4]        = {'W', 'A', 'V', 'E'};
@@ -28,8 +28,8 @@ class WavFile {
 
             uint8_t DATA[4] = {'d', 'a', 't', 'a'};
             uint32_t Subchunk2Size;
-        } WAVHEADER;
-        WAVHEADER wavheader;
+        } __attribute__((packed)) wavheader_t;
+        wavheader_t wavheader;
 
         constexpr static double max_amp = INT16_MAX;
         constexpr static double def_amp = max_amp * 0.25; // the base amplitude, not too silent, but leaves enough room for some fun
